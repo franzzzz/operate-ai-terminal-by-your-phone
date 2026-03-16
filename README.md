@@ -1,5 +1,7 @@
 # telegram-codex-controller
 
+![CI](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/actions/workflows/ci.yml/badge.svg?branch=main)
+
 Turn Telegram into a mobile control console for Codex, Claude, and other terminal-based agents running on your computer.
 
 This is not a simple stdout forwarder. It packages multi-session status, alerts, human handoff, log export, and reply routing into a workflow that is practical to use from your phone:
