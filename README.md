@@ -662,10 +662,12 @@ tail -f logs/stderr.log
 
 ### Optional shell alias
 
-If you want a short command for restarting or loading the service, add an alias like this to your shell:
+If you want short shell commands for everyday service operations, add aliases like these:
 
 ```bash
-alias tgc-service="/path/to/repo/scripts/service_restart.sh"
+alias tgService="/path/to/repo/scripts/service_restart.sh"
+alias tgStatus="/path/to/repo/scripts/service_status.sh"
+alias tgLogs="tail -f /path/to/repo/logs/stderr.log"
 ```
 
 ### tmux and mirroring notes
