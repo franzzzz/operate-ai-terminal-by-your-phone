@@ -847,7 +847,7 @@ class TelegramConsoleManager:
             [
                 InlineKeyboardButton("Continue", callback_data=f"c|c|{key}"),
                 InlineKeyboardButton("Refresh", callback_data=f"c|r|{key}"),
-                InlineKeyboardButton("Tail", callback_data=f"c|t|{key}"),
+                InlineKeyboardButton("Recent", callback_data=f"c|t|{key}"),
             ]
         ]
         second_row: list[InlineKeyboardButton] = []

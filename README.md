@@ -207,7 +207,7 @@ The sections above describe the product. This section covers the operating surfa
 Status cards now include inline keyboard actions for the most common flows:
 - `Continue`
 - `Refresh`
-- `Tail`
+- `Recent`
 - `Focus` for mirrored Terminal sessions
 - `Stop` for tmux and SDK assistant sessions
 

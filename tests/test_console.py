@@ -269,7 +269,7 @@ class ConsoleRenderTests(unittest.TestCase):
             )
             self.assertIsInstance(markup, InlineKeyboardMarkup)
             labels = [button.text for row in markup.inline_keyboard for button in row]
-            self.assertEqual(labels[:3], ["Continue", "Refresh", "Tail"])
+            self.assertEqual(labels[:3], ["Continue", "Refresh", "Recent"])
             self.assertIn("Focus", labels)
             self.assertNotIn("Logs", labels)
             self.assertNotIn("Find Error", labels)
