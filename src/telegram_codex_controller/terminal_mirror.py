@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 import logging
 import os
 import re
 import subprocess
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List
@@ -249,11 +251,9 @@ class TerminalMirrorManager:
         normalized_tty = self.resolve_identifier(tty)
         env = {
             "TGC_TTY": f"/dev/{normalized_tty}" if not normalized_tty.startswith("/dev/") else normalized_tty,
-            "TGC_PAYLOAD": text,
         }
         paste_script = [
             'set targetTty to system attribute "TGC_TTY"',
-            'set payload to system attribute "TGC_PAYLOAD"',
             'set foundTab to false',
             'tell application "Terminal"',
             "activate",
@@ -270,18 +270,16 @@ class TerminalMirrorManager:
             "end repeat",
             "end tell",
             'if foundTab is false then return "missing"',
-            'set savedClipboard to the clipboard',
-            'set the clipboard to payload',
             "delay 0.1",
             'tell application "System Events"',
             'keystroke "v" using command down',
             "key code 36",
             "end tell",
-            "delay 0.1",
-            'set the clipboard to savedClipboard',
             'return "ok"',
         ]
+        saved_clipboard = self._read_clipboard_bytes()
         try:
+            self._write_clipboard_bytes(text.encode("utf-8"))
             result = self._run_osascript(paste_script, env=env).strip()
             if result == "ok":
                 return
@@ -289,11 +287,18 @@ class TerminalMirrorManager:
                 raise ValueError(result)
         except subprocess.CalledProcessError:
             pass
+        finally:
+            with contextlib.suppress(Exception):
+                self._write_clipboard_bytes(saved_clipboard)
 
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as handle:
+            handle.write(text)
+            payload_path = handle.name
         fallback_script = [
             'tell application "Terminal"',
             'set targetTty to system attribute "TGC_TTY"',
-            'set payload to system attribute "TGC_PAYLOAD"',
+            'set payloadPath to system attribute "TGC_PAYLOAD_PATH"',
+            'set payload to do shell script "/bin/cat " & quoted form of payloadPath',
             "repeat with w in windows",
             "repeat with t in tabs of w",
             "if (((tty of t) as text) is equal to targetTty) then",
@@ -305,9 +310,31 @@ class TerminalMirrorManager:
             'return "missing"',
             "end tell",
         ]
-        result = self._run_osascript(fallback_script, env=env).strip()
-        if result != "ok":
-            raise ValueError(f"Terminal tab '{tty}' was not found")
+        try:
+            result = self._run_osascript(
+                fallback_script,
+                env={**env, "TGC_PAYLOAD_PATH": payload_path},
+            ).strip()
+            if result != "ok":
+                raise ValueError(f"Terminal tab '{tty}' was not found")
+        finally:
+            Path(payload_path).unlink(missing_ok=True)
+
+    def _read_clipboard_bytes(self) -> bytes:
+        result = subprocess.run(
+            ["pbpaste"],
+            capture_output=True,
+            check=True,
+        )
+        return result.stdout
+
+    def _write_clipboard_bytes(self, payload: bytes) -> None:
+        subprocess.run(
+            ["pbcopy"],
+            input=payload,
+            capture_output=True,
+            check=True,
+        )
 
     async def _run(self) -> None:
         while True:

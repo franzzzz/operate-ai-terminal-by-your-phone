@@ -96,6 +96,26 @@ class StubMirrorManager(TerminalMirrorManager):
         )
 
 
+class ClipboardMirrorManager(TerminalMirrorManager):
+    def __init__(self, settings: Settings) -> None:
+        super().__init__(settings)
+        self.clipboard_writes: list[bytes] = []
+        self.osascript_calls: list[tuple[list[str], dict[str, str] | None]] = []
+        self.next_osascript_results: list[str] = []
+
+    def _read_clipboard_bytes(self) -> bytes:  # type: ignore[override]
+        return b"original clipboard"
+
+    def _write_clipboard_bytes(self, payload: bytes) -> None:  # type: ignore[override]
+        self.clipboard_writes.append(payload)
+
+    def _run_osascript(self, lines, env=None):  # type: ignore[override]
+        self.osascript_calls.append((list(lines), dict(env) if env is not None else None))
+        if self.next_osascript_results:
+            return self.next_osascript_results.pop(0)
+        return "ok"
+
+
 class TerminalMirrorDeltaTests(unittest.TestCase):
     def test_returns_append_only_delta(self) -> None:
         delta, reset = _compute_delta("a\nb", "a\nb\nc", 10)
@@ -133,6 +153,32 @@ class TerminalMirrorDeltaTests(unittest.TestCase):
             self.assertEqual(len(manager.published), 1)
             self.assertEqual(manager.published[0]["state"], "running")
             self.assertEqual(manager.published[0]["step"], "mirroring")
+
+    def test_send_input_uses_utf8_clipboard_for_primary_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager = ClipboardMirrorManager(make_settings(Path(temp_dir)))
+
+            manager.send_input("ttys002", "分开配置")
+
+            self.assertEqual(manager.clipboard_writes[0], "分开配置".encode("utf-8"))
+            self.assertEqual(manager.clipboard_writes[-1], b"original clipboard")
+            first_env = manager.osascript_calls[0][1] or {}
+            self.assertIn("TGC_TTY", first_env)
+            self.assertNotIn("TGC_PAYLOAD", first_env)
+
+    def test_send_input_uses_temp_file_for_fallback_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager = ClipboardMirrorManager(make_settings(Path(temp_dir)))
+            manager.next_osascript_results = ["missing", "ok"]
+
+            manager.send_input("ttys002", "分开配置")
+
+            self.assertEqual(len(manager.osascript_calls), 2)
+            fallback_env = manager.osascript_calls[1][1] or {}
+            self.assertIn("TGC_PAYLOAD_PATH", fallback_env)
+            payload_path = Path(fallback_env["TGC_PAYLOAD_PATH"])
+            self.assertFalse(payload_path.exists())
+            self.assertNotIn("TGC_PAYLOAD", fallback_env)
 
 
 if __name__ == "__main__":
