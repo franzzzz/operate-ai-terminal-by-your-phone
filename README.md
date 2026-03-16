@@ -217,7 +217,7 @@ Examples:
 ```bash
 /run research codex exec "Analyze ICD-10-GM validation edge cases"
 /codex ontology Build an ontology plan for medical coding validation
-/agent_new codex triage /Users/linfwang/Documents/research
+/agent_new codex triage ./workspace
 /agent triage "Summarize the repo structure"
 /agent_log triage
 /forum_on
@@ -621,9 +621,9 @@ Sample files:
 Typical macOS flow:
 
 ```bash
-cp docs/launchd.plist.example ~/Library/LaunchAgents/com.linfwang.telegram-codex-controller.plist
-launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.linfwang.telegram-codex-controller.plist
-launchctl kickstart -k gui/$(id -u)/com.linfwang.telegram-codex-controller
+cp docs/launchd.plist.example ~/Library/LaunchAgents/com.example.telegram-codex-controller.plist
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.example.telegram-codex-controller.plist
+launchctl kickstart -k gui/$(id -u)/com.example.telegram-codex-controller
 ```
 
 ### Service helper scripts
@@ -635,7 +635,7 @@ This repository now includes two operational helper scripts:
 ./scripts/service_restart.sh
 ```
 
-They default to the LaunchAgent label `com.linfwang.telegram-codex-controller`.
+The sample LaunchAgent label used in this documentation is `com.example.telegram-codex-controller`.
 
 If you use a different LaunchAgent label or plist path, override them with:
 

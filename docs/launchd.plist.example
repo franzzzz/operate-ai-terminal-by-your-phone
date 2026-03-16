@@ -3,17 +3,19 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.linfwang.telegram-codex-controller</string>
+    <string>com.example.telegram-codex-controller</string>
+
+    <!-- Replace . with your project root when adapting this example locally. -->
 
     <key>ProgramArguments</key>
     <array>
         <string>/bin/zsh</string>
         <string>-lc</string>
-        <string>cd /Users/linfwang/repo/telegram-codex-controller && source .venv/bin/activate && export PYTHONPATH=/Users/linfwang/repo/telegram-codex-controller/src:${PYTHONPATH:-} && python -m telegram_codex_controller.main</string>
+        <string>cd . && source .venv/bin/activate && export PYTHONPATH=./src:${PYTHONPATH:-} && python -m telegram_codex_controller.main</string>
     </array>
 
     <key>WorkingDirectory</key>
-    <string>/Users/linfwang/repo/telegram-codex-controller</string>
+    <string>.</string>
 
     <key>EnvironmentVariables</key>
     <dict>
@@ -28,9 +30,9 @@
     <true/>
 
     <key>StandardOutPath</key>
-    <string>/Users/linfwang/repo/telegram-codex-controller/logs/stdout.log</string>
+    <string>./logs/stdout.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Users/linfwang/repo/telegram-codex-controller/logs/stderr.log</string>
+    <string>./logs/stderr.log</string>
 </dict>
 </plist>
