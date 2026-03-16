@@ -1,0 +1,110 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, for example v0.1.0"
+        required: true
+      target:
+        description: "Git ref to tag if the tag does not already exist"
+        required: false
+        default: "main"
+      title:
+        description: "Release title"
+        required: false
+      notes:
+        description: "Release notes. Leave empty to auto-generate notes."
+        required: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve release metadata
+        id: meta
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            tag="${{ inputs.tag }}"
+            target="${{ inputs.target }}"
+            title="${{ inputs.title }}"
+            notes="${{ inputs.notes }}"
+          else
+            tag="${GITHUB_REF_NAME}"
+            target="${GITHUB_SHA}"
+            title=""
+            notes=""
+          fi
+
+          if [ -z "${tag}" ]; then
+            echo "Release tag is required." >&2
+            exit 1
+          fi
+
+          if [ -z "${title}" ]; then
+            title="${tag}"
+          fi
+
+          echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
+          echo "target=${target}" >> "${GITHUB_OUTPUT}"
+          echo "title=${title}" >> "${GITHUB_OUTPUT}"
+          {
+            echo "notes<<EOF"
+            printf '%s\n' "${notes}"
+            echo "EOF"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Create tag for manual release
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          tag="${{ steps.meta.outputs.tag }}"
+          target="${{ steps.meta.outputs.target }}"
+
+          git fetch --tags origin
+
+          if git rev-parse "refs/tags/${tag}" >/dev/null 2>&1; then
+            echo "Tag ${tag} already exists."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag "${tag}" "${target}"
+          git push origin "refs/tags/${tag}"
+
+      - name: Create or update GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          tag="${{ steps.meta.outputs.tag }}"
+          title="${{ steps.meta.outputs.title }}"
+          notes="${{ steps.meta.outputs.notes }}"
+
+          if gh release view "${tag}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            if [ -n "${notes}" ]; then
+              gh release edit "${tag}" --repo "${GITHUB_REPOSITORY}" --title "${title}" --notes "${notes}"
+            else
+              gh release edit "${tag}" --repo "${GITHUB_REPOSITORY}" --title "${title}"
+            fi
+            exit 0
+          fi
+
+          if [ -n "${notes}" ]; then
+            gh release create "${tag}" --repo "${GITHUB_REPOSITORY}" --title "${title}" --notes "${notes}"
+          else
+            gh release create "${tag}" --repo "${GITHUB_REPOSITORY}" --title "${title}" --generate-notes
+          fi

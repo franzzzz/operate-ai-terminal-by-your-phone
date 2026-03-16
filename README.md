@@ -1,6 +1,9 @@
 # telegram-codex-controller
 
-![CI](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/actions/workflows/ci.yml/badge.svg?branch=main)
+[![CI](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/franzzzz/operate-ai-terminal-by-your-phone)](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/releases)
+[![License](https://img.shields.io/github/license/franzzzz/operate-ai-terminal-by-your-phone)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/franzzzz/operate-ai-terminal-by-your-phone)](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/commits/main)
 
 Turn Telegram into a mobile control console for Codex, Claude, and other terminal-based agents running on your computer.
 
@@ -249,6 +252,25 @@ Recommended mobile flow:
 The bot also registers high-frequency commands through `setMyCommands`, so they appear directly in Telegram’s command picker.
 
 Mirror sessions keep the real `ttysNNN` routing key internally, but you can attach a persistent alias like `ocna-vpn` so status cards, topics, and alerts are easier to recognize.
+
+## Releases
+
+This repository supports two release paths:
+
+1. Push a version tag from your machine:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+2. Run the `Release` workflow manually from the GitHub Actions UI and provide:
+   - a tag such as `v0.1.0`
+   - an optional target ref such as `main` or a commit SHA
+   - an optional custom title
+   - optional release notes
+
+If notes are left empty, GitHub release notes are generated automatically.
 
 ## Requirements
 
