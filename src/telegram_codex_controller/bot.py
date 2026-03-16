@@ -64,6 +64,8 @@ Reply routing:
 Reply to a session message, or send text directly inside that session's forum topic, to route input automatically.
 """
 
+CONTINUE_PROMPT = "find yourself a lead to make you keep continue your optimized work untill all in the plan are completed."
+
 async def _send_chunked_text(
     application: Application,
     chat_id: int,
@@ -1302,6 +1304,19 @@ async def callback_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         if op == "r":
             await _refresh_route_status(context.application, route, force=True)
             await query.answer("Refreshed.")
+            return
+
+        if op == "c":
+            if chat_id is None:
+                raise ValueError("Chat context is missing.")
+            _bind_route_to_current_topic(context.application, update, route)
+            await _send_to_route(
+                context.application,
+                chat_id,
+                route,
+                CONTINUE_PROMPT,
+            )
+            await query.answer("Continue sent.")
             return
 
         if op == "t":

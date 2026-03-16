@@ -205,10 +205,9 @@ The sections above describe the product. This section covers the operating surfa
 - Reply to a status card or routed event, or just send a plain text message inside that session topic — automatically send text back to the mirrored Terminal tab, tmux session, or SDK assistant session
 
 Status cards now include inline keyboard actions for the most common flows:
+- `Continue`
 - `Refresh`
 - `Tail`
-- `Logs`
-- `Find Error`
 - `Focus` for mirrored Terminal sessions
 - `Stop` for tmux and SDK assistant sessions
 

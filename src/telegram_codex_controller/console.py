@@ -845,18 +845,16 @@ class TelegramConsoleManager:
 
         buttons = [
             [
+                InlineKeyboardButton("Continue", callback_data=f"c|c|{key}"),
                 InlineKeyboardButton("Refresh", callback_data=f"c|r|{key}"),
                 InlineKeyboardButton("Tail", callback_data=f"c|t|{key}"),
-                InlineKeyboardButton("Logs", callback_data=f"c|l|{key}"),
             ]
         ]
-        second_row: list[InlineKeyboardButton] = [
-            InlineKeyboardButton("Find Error", callback_data=f"c|e|{key}")
-        ]
+        second_row: list[InlineKeyboardButton] = []
         if record.get("route_kind") == "mirror":
-            second_row.insert(0, InlineKeyboardButton("Focus", callback_data=f"c|f|{key}"))
+            second_row.append(InlineKeyboardButton("Focus", callback_data=f"c|f|{key}"))
         elif record.get("route_kind") in {"tmux", "agent"}:
-            second_row.insert(0, InlineKeyboardButton("Stop", callback_data=f"c|x|{key}"))
+            second_row.append(InlineKeyboardButton("Stop", callback_data=f"c|x|{key}"))
         if second_row:
             buttons.append(second_row)
         return InlineKeyboardMarkup(buttons)

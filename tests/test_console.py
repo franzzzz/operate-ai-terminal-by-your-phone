@@ -6,6 +6,8 @@ import time
 import unittest
 from pathlib import Path
 
+from telegram import InlineKeyboardMarkup
+
 from telegram_codex_controller.config import Settings
 from telegram_codex_controller.console import SessionStatusSpec, TelegramConsoleManager
 from telegram_codex_controller.reply_routes import ReplyRoute, parse_reply_route
@@ -253,6 +255,24 @@ class ConsoleRenderTests(unittest.TestCase):
             }
             payload = manager.render_record("oracle-chat-link")
             self.assertIn("send text directly in this topic", payload)
+
+    def test_status_reply_markup_shows_continue_and_hides_logs_and_find_error(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            settings = make_settings(Path(temp_dir))
+            manager = TelegramConsoleManager(settings)
+            markup = manager._status_reply_markup(
+                {
+                    "route_kind": "mirror",
+                    "route_target": "ttys002",
+                    "callback_key": "abc123",
+                }
+            )
+            self.assertIsInstance(markup, InlineKeyboardMarkup)
+            labels = [button.text for row in markup.inline_keyboard for button in row]
+            self.assertEqual(labels[:3], ["Continue", "Refresh", "Tail"])
+            self.assertIn("Focus", labels)
+            self.assertNotIn("Logs", labels)
+            self.assertNotIn("Find Error", labels)
 
     def test_resolve_route_by_topic_uses_bound_topic_and_chat(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
