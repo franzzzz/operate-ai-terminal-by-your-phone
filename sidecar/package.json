@@ -1,0 +1,9 @@
+{
+  "name": "telegram-codex-controller-sidecar",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "0.1.30",
+    "@openai/codex-sdk": "0.57.0"
+  }
+}

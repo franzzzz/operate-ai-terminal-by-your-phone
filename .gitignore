@@ -1,0 +1,10 @@
+.env
+.venv/
+logs/
+.state/
+.npm-cache/
+sidecar/node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+telegram_codex_remote_control_system.docx
