@@ -397,7 +397,7 @@ CONSOLE_FORUM_ENABLED=true
 CONSOLE_AUTO_CREATE_TOPICS=true
 CONSOLE_SEND_LOG_DOCUMENTS=true
 CONSOLE_TOPIC_BUMP_ENABLED=true
-CONSOLE_STATUS_SUMMARY_LINES=5
+CONSOLE_STATUS_SUMMARY_LINES=15
 CONSOLE_RUNNING_UPDATE_MIN_INTERVAL_SECONDS=12
 CONSOLE_GLOBAL_WRITE_SPACING_SECONDS=2
 ```
@@ -531,7 +531,7 @@ All configuration is done via environment variables.
 | `CONSOLE_AUTO_CREATE_TOPICS` | no | `true` | Auto-create INDEX, ALERTS, and session topics when forum mode is enabled |
 | `CONSOLE_INDEX_TOPIC_ID` | no | auto | Existing topic id to use for INDEX |
 | `CONSOLE_ALERTS_TOPIC_ID` | no | auto | Existing topic id to use for ALERTS |
-| `CONSOLE_STATUS_SUMMARY_LINES` | no | `5` | Number of important lines to keep in each status card summary |
+| `CONSOLE_STATUS_SUMMARY_LINES` | no | `15` | Number of important lines to keep in each status card summary |
 | `CONSOLE_STATUS_UPDATE_MIN_INTERVAL_SECONDS` | no | `5` | Minimum interval between status-card edits for the same session |
 | `CONSOLE_RUNNING_UPDATE_MIN_INTERVAL_SECONDS` | no | `12` | Minimum interval for sessions that are simply running normally |
 | `CONSOLE_GLOBAL_WRITE_SPACING_SECONDS` | no | `2` | Global spacing between automatic Telegram card/index writes |

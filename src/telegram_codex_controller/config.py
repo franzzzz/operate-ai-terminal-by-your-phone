@@ -133,7 +133,7 @@ class Settings:
             console_auto_create_topics=_parse_bool(os.getenv("CONSOLE_AUTO_CREATE_TOPICS"), True),
             console_index_topic_id=_parse_optional_int(os.getenv("CONSOLE_INDEX_TOPIC_ID")),
             console_alerts_topic_id=_parse_optional_int(os.getenv("CONSOLE_ALERTS_TOPIC_ID")),
-            console_status_summary_lines=_parse_int(os.getenv("CONSOLE_STATUS_SUMMARY_LINES"), 5),
+            console_status_summary_lines=_parse_int(os.getenv("CONSOLE_STATUS_SUMMARY_LINES"), 15),
             console_status_update_min_interval_seconds=_parse_int(
                 os.getenv("CONSOLE_STATUS_UPDATE_MIN_INTERVAL_SECONDS"),
                 5,
