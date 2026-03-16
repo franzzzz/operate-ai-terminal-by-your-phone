@@ -72,6 +72,7 @@ class TelegramConsoleManager:
         self._application = application
         self._prune_expired_records()
         self._restore_reply_routes()
+        self._queue_existing_stopped_session_cleanups()
         if self._stuck_task is None:
             self._stuck_task = asyncio.create_task(self._stuck_watcher())
         if self._pin_task is None:
@@ -176,7 +177,11 @@ class TelegramConsoleManager:
         status_text = self._render_status_text(record)
         last_text = record.get("status_text")
         record["_pending_status_text"] = status_text
-        if self._session_has_pending_work(record):
+        if spec.state == "stopped":
+            self._dirty_session_routes.discard(spec.route.label)
+            self._pending_status_due_monotonic.pop(spec.route.label, None)
+            self._queue_stopped_session_cleanup(record)
+        elif self._session_has_pending_work(record):
             self._mark_session_dirty(
                 spec.route.label,
                 record,
@@ -354,6 +359,7 @@ class TelegramConsoleManager:
         self._topic_bump_reason_by_route.pop(route.label, None)
         self._topic_bump_queue_seen.discard(route.label)
         self._last_status_render_monotonic.pop(route.label, None)
+        self._mark_index_dirty(immediate=True, urgent=True)
         self._persist()
 
     def lookup_route_by_message(self, chat_id: int, message_id: int) -> ReplyRoute | None:
@@ -953,6 +959,10 @@ class TelegramConsoleManager:
             if handled:
                 return
 
+        handled = await self._flush_stopped_session_cleanup()
+        if handled:
+            return
+
         handled = await self._flush_stale_topic_cleanup()
         if handled:
             return
@@ -1396,6 +1406,100 @@ class TelegramConsoleManager:
             due = now if immediate else min(existing_due, due)
         self._pending_status_due_monotonic[route_label] = due
         self._dirty_session_routes.add(route_label)
+
+    def _queue_existing_stopped_session_cleanups(self) -> None:
+        for record in self._state.get("sessions", {}).values():
+            if record.get("state") == "stopped":
+                self._queue_stopped_session_cleanup(record)
+
+    def _queue_stopped_session_cleanup(self, record: dict[str, Any]) -> None:
+        if record.get("_pending_topic_delete"):
+            return
+        route_kind = record.get("route_kind")
+        route_target = record.get("route_target")
+        if not route_kind or not route_target:
+            return
+        record["_pending_topic_delete"] = {
+            "route_kind": route_kind,
+            "route_target": route_target,
+            "topic_id": record.get("topic_id"),
+            "status_thread_id": record.get("status_thread_id"),
+            "topic_managed": bool(record.get("topic_managed", True)),
+            "chat_id": record.get("status_chat_id") or self._console_chat_id(),
+            "status_message_id": record.get("status_message_id"),
+            "topic_bump_message_id": record.get("topic_bump_message_id"),
+            "last_event_message_id": record.get("last_event_message_id"),
+            "label": record.get("label") or route_target,
+        }
+
+    async def _flush_stopped_session_cleanup(self) -> bool:
+        if self._application is None:
+            return False
+        for route_label, record in list(self._state.get("sessions", {}).items()):
+            pending = record.get("_pending_topic_delete")
+            if not pending or record.get("state") != "stopped":
+                continue
+
+            route = ReplyRoute(kind=pending["route_kind"], target=pending["route_target"])
+            chat_id = int(pending.get("chat_id") or self._console_chat_id())
+            status_message_id = pending.get("status_message_id")
+            topic_bump_message_id = pending.get("topic_bump_message_id")
+            event_message_id = pending.get("last_event_message_id")
+            topic_ids = []
+            for candidate in [pending.get("topic_id"), pending.get("status_thread_id")]:
+                if candidate and candidate not in topic_ids:
+                    topic_ids.append(candidate)
+            topic_managed = bool(pending.get("topic_managed", True))
+            now = time.monotonic()
+
+            try:
+                for message_id in [status_message_id, topic_bump_message_id, event_message_id]:
+                    if not message_id:
+                        continue
+                    with contextlib.suppress(BadRequest):
+                        await self._application.bot.delete_message(
+                            chat_id=chat_id,
+                            message_id=int(message_id),
+                        )
+                if topic_ids and self.forum_enabled():
+                    if topic_managed:
+                        for topic_id in topic_ids:
+                            with contextlib.suppress(BadRequest):
+                                await self._application.bot.delete_forum_topic(
+                                    chat_id=chat_id,
+                                    message_thread_id=int(topic_id),
+                                )
+                    else:
+                        for topic_id in topic_ids:
+                            with contextlib.suppress(BadRequest):
+                                await self._application.bot.edit_forum_topic(
+                                    chat_id=chat_id,
+                                    message_thread_id=int(topic_id),
+                                    name=_archived_topic_title(
+                                        {
+                                            "label": pending.get("label") or pending.get("route_target") or "?",
+                                            "topic_title": record.get("topic_title") or "",
+                                        }
+                                    ),
+                                )
+                            with contextlib.suppress(BadRequest):
+                                await self._application.bot.close_forum_topic(
+                                    chat_id=chat_id,
+                                    message_thread_id=int(topic_id),
+                                )
+                self._record_write(now, state="stopped", urgent=True)
+                self.clear_session(route)
+                LOG.info("Deleted stopped session topic for %s", route_label)
+                return True
+            except RetryAfter as exc:
+                self._enter_write_backoff(float(exc.retry_after) + 1)
+                LOG.info("Stopped session cleanup backed off for %.1fs", float(exc.retry_after))
+                return False
+            except TelegramError:
+                LOG.exception("Failed to delete stopped session topic for %s", route_label)
+                self.clear_session(route)
+                return False
+        return False
 
     def _queue_stale_topic_cleanup(self, record: dict[str, Any], *, new_topic_id: int | None) -> None:
         old_topic_id = record.get("topic_id")

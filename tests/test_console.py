@@ -33,6 +33,9 @@ class FakeBot:
     async def close_forum_topic(self, **kwargs: object) -> None:
         self.calls.append(("close_forum_topic", kwargs))
 
+    async def delete_forum_topic(self, **kwargs: object) -> None:
+        self.calls.append(("delete_forum_topic", kwargs))
+
 
 def make_settings(root: Path) -> Settings:
     sidecar = root / "sidecar" / "runner.mjs"
@@ -386,6 +389,89 @@ class ConsoleRenderTests(unittest.TestCase):
                         "close_forum_topic",
                         {"chat_id": -1001, "message_thread_id": 41},
                     ),
+                ],
+            )
+
+    def test_stopped_transition_queues_topic_delete_cleanup(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            settings = make_settings(Path(temp_dir))
+            manager = TelegramConsoleManager(settings)
+            manager._application = FakeApplication(bot=FakeBot())
+            manager.set_forum_enabled(True)
+            route = ReplyRoute("mirror", "ttys039")
+            manager._state["sessions"][route.label] = {
+                "route_kind": "mirror",
+                "route_target": "ttys039",
+                "kind": "mirror",
+                "label": "ttys039",
+                "title": "Terminal",
+                "state": "running",
+                "step": "mirroring",
+                "summary": "still working",
+                "updated_at": "2026-03-15T21:00:00+00:00",
+                "status_message_id": 11,
+                "status_chat_id": -1001,
+                "topic_id": 42,
+                "topic_title": "🟢 ttys039",
+                "topic_bump_message_id": 12,
+            }
+
+            asyncio.run(
+                manager.update_status(
+                    SessionStatusSpec(
+                        route=route,
+                        kind="mirror",
+                        label="ttys039",
+                        title="Terminal",
+                        state="stopped",
+                        step="session ended",
+                        summary="Mirror source disappeared.",
+                    )
+                )
+            )
+
+            pending = manager._state["sessions"][route.label].get("_pending_topic_delete")
+            self.assertIsNotNone(pending)
+            self.assertEqual(pending["topic_id"], 42)
+            self.assertEqual(pending["status_message_id"], 11)
+
+    def test_flush_stopped_session_cleanup_deletes_managed_topic_and_clears_session(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            settings = make_settings(Path(temp_dir))
+            bot = FakeBot()
+            manager = TelegramConsoleManager(settings)
+            manager._application = FakeApplication(bot=bot)
+            manager.set_forum_enabled(True)
+            manager._state["sessions"]["mirror:ttys039"] = {
+                "route_kind": "mirror",
+                "route_target": "ttys039",
+                "label": "ttys039",
+                "kind": "mirror",
+                "state": "stopped",
+                "_pending_topic_delete": {
+                    "route_kind": "mirror",
+                    "route_target": "ttys039",
+                    "topic_id": 42,
+                    "topic_managed": True,
+                    "chat_id": -1001,
+                    "status_message_id": 11,
+                    "topic_bump_message_id": 12,
+                    "last_event_message_id": 13,
+                    "label": "ttys039",
+                },
+            }
+
+            handled = asyncio.run(manager._flush_stopped_session_cleanup())
+
+            self.assertTrue(handled)
+            self.assertNotIn("mirror:ttys039", manager._state["sessions"])
+            self.assertEqual(
+                bot.calls,
+                [
+                    ("delete_message", {"chat_id": -1001, "message_id": 11}),
+                    ("delete_message", {"chat_id": -1001, "message_id": 12}),
+                    ("delete_message", {"chat_id": -1001, "message_id": 13}),
+                    ("delete_forum_topic", {"chat_id": -1001, "message_thread_id": 42}),
                 ],
             )
 
