@@ -588,23 +588,91 @@ CODEX_COMMAND_TEMPLATE=codex exec --profile prod "{prompt}"
 CODEX_COMMAND_TEMPLATE=codex run research_agent --input "{prompt}"
 ```
 
-## Deploy as a background service
+## Service Mode and Operations
 
-### systemd example
+For day-to-day use, the controller should run as a background service rather than inside a temporary interactive shell.
 
-See `docs/systemd.service.example`.
+### macOS LaunchAgent behavior
 
-### launchd example (macOS)
+On macOS, the recommended mode is a user `launchd` LaunchAgent.
 
-See `docs/launchd.plist.example`.
+That gives you:
 
-### tmux itself is used only for spawned tasks
+- automatic start after login through `RunAtLoad`
+- automatic restart through `KeepAlive`
+- access to the logged-in GUI session, which is required for existing `Terminal.app` mirroring
 
-The bot process does not need to run inside tmux, though it can.
+To keep the Telegram console available after a machine restart, all of these conditions must hold:
 
-### Existing Terminal mirroring is macOS-specific
+- the Mac is powered on
+- the macOS user session is logged in
+- the machine has network access
+- the machine is not asleep
 
-The automatic mirror worker reads `Terminal.app` tab contents through AppleScript. Existing sessions running in another terminal emulator are not mirrored by default.
+Because existing `Terminal.app` mirroring depends on the GUI session, a LaunchAgent is usually the correct mode for this project. A LaunchDaemon can start earlier, but it does not have the same access to logged-in Terminal windows.
+
+### Install or reload the LaunchAgent
+
+Sample files:
+
+- macOS: `docs/launchd.plist.example`
+- Linux: `docs/systemd.service.example`
+
+Typical macOS flow:
+
+```bash
+cp docs/launchd.plist.example ~/Library/LaunchAgents/com.linfwang.telegram-codex-controller.plist
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.linfwang.telegram-codex-controller.plist
+launchctl kickstart -k gui/$(id -u)/com.linfwang.telegram-codex-controller
+```
+
+### Service helper scripts
+
+This repository now includes two operational helper scripts:
+
+```bash
+./scripts/service_status.sh
+./scripts/service_restart.sh
+```
+
+They default to the LaunchAgent label `com.linfwang.telegram-codex-controller`.
+
+If you use a different LaunchAgent label or plist path, override them with:
+
+- `TGC_LAUNCHD_LABEL`
+- `TGC_LAUNCHD_PLIST`
+- `TGC_LOG_PATH`
+
+Examples:
+
+```bash
+TGC_LAUNCHD_LABEL=com.example.telegram-codex-controller ./scripts/service_status.sh
+TGC_LAUNCHD_PLIST=$HOME/Library/LaunchAgents/com.example.telegram-codex-controller.plist ./scripts/service_restart.sh
+```
+
+### Daily operations
+
+Common commands:
+
+```bash
+./scripts/service_status.sh
+./scripts/service_restart.sh
+tail -f logs/stderr.log
+```
+
+### Optional shell alias
+
+If you want a short command for restarting or loading the service, add an alias like this to your shell:
+
+```bash
+alias tgc-service="/path/to/repo/scripts/service_restart.sh"
+```
+
+### tmux and mirroring notes
+
+- The bot process itself does not need to run inside `tmux`, though spawned tasks can.
+- Existing terminal mirroring is macOS-specific because it reads `Terminal.app` tab contents through AppleScript.
+- Sessions running in another terminal emulator are not mirrored automatically.
 
 ### Forum topics are optional but recommended
 
@@ -640,6 +708,8 @@ telegram-codex-controller/
 ├── docs/
 │   └── systemd.service.example
 ├── scripts/
+│   ├── service_restart.sh
+│   ├── service_status.sh
 │   ├── run.sh
 │   └── run_service.sh
 └── src/
