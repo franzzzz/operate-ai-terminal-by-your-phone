@@ -679,15 +679,21 @@ async def topic_create_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         return
 
     custom_name = coalesce_args(context.args[1:]) or None
+    existing_topic_id = None
+    with contextlib.suppress(Exception):
+        existing_topic_id = _console(context.application).open_record(route.label).get("topic_id")
     try:
         topic_id = await _console(context.application).create_session_topic(route, topic_name=custom_name)
         await _refresh_route_status(context.application, route, force=True)
     except Exception as exc:
         await update.effective_chat.send_message(f"Failed to create topic: {exc}")
         return
-    await update.effective_chat.send_message(
-        f"Created and bound topic {topic_id} for session '{route.target}'."
-    )
+    if existing_topic_id:
+        await update.effective_chat.send_message(
+            f"Session '{route.target}' is already bound to topic {topic_id}. Reused the existing topic."
+        )
+        return
+    await update.effective_chat.send_message(f"Created and bound topic {topic_id} for session '{route.target}'.")
 
 
 async def send_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

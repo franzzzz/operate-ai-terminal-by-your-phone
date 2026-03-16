@@ -13,8 +13,23 @@ from telegram_codex_controller.terminal_mirror import TerminalMirrorManager
 
 
 class FakeApplication:
-    def __init__(self) -> None:
+    def __init__(self, bot: object | None = None) -> None:
         self.bot_data: dict[object, object] = {}
+        self.bot = bot
+
+
+class FakeBot:
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, dict[str, object]]] = []
+
+    async def delete_message(self, **kwargs: object) -> None:
+        self.calls.append(("delete_message", kwargs))
+
+    async def edit_forum_topic(self, **kwargs: object) -> None:
+        self.calls.append(("edit_forum_topic", kwargs))
+
+    async def close_forum_topic(self, **kwargs: object) -> None:
+        self.calls.append(("close_forum_topic", kwargs))
 
 
 def make_settings(root: Path) -> Settings:
@@ -257,6 +272,102 @@ class ConsoleRenderTests(unittest.TestCase):
                 ReplyRoute("mirror", "ttys002"),
             )
             self.assertIsNone(manager.resolve_route_by_topic(-1002, 42))
+
+    def test_set_session_topic_queues_stale_topic_cleanup_on_rebind(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            settings = make_settings(Path(temp_dir))
+            manager = TelegramConsoleManager(settings)
+            route = ReplyRoute("mirror", "ttys035")
+            manager._state["sessions"][route.label] = {
+                "route_kind": "mirror",
+                "route_target": "ttys035",
+                "label": "ttys035",
+                "topic_id": 41,
+                "topic_title": "🟢 ttys035",
+                "status_chat_id": -1001,
+                "status_message_id": 11,
+                "topic_bump_message_id": 12,
+            }
+
+            manager.set_session_topic(route, 42)
+
+            record = manager._state["sessions"][route.label]
+            self.assertEqual(record["topic_id"], 42)
+            self.assertIsNone(record["status_message_id"])
+            stale_topics = record.get("_stale_topics") or []
+            self.assertEqual(len(stale_topics), 1)
+            self.assertEqual(stale_topics[0]["topic_id"], 41)
+            self.assertEqual(stale_topics[0]["status_message_id"], 11)
+
+    def test_create_session_topic_reuses_existing_topic_instead_of_duplication(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            settings = make_settings(Path(temp_dir))
+            manager = TelegramConsoleManager(settings)
+            manager._application = FakeApplication(bot=FakeBot())
+            manager.set_forum_enabled(True)
+            route = ReplyRoute("mirror", "ttys035")
+            manager._state["sessions"][route.label] = {
+                "route_kind": "mirror",
+                "route_target": "ttys035",
+                "label": "ttys035",
+                "kind": "mirror",
+                "topic_id": 41,
+                "topic_title": "🟢 ttys035",
+            }
+
+            topic_id = asyncio.run(manager.create_session_topic(route, topic_name="Custom Title"))
+
+            self.assertEqual(topic_id, 41)
+            self.assertEqual(
+                manager._state["sessions"][route.label]["_pending_topic_title"],
+                "Custom Title",
+            )
+
+    def test_flush_stale_topic_cleanup_archives_previous_topic(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            settings = make_settings(Path(temp_dir))
+            bot = FakeBot()
+            manager = TelegramConsoleManager(settings)
+            manager._application = FakeApplication(bot=bot)
+            manager.set_forum_enabled(True)
+            manager.set_console_chat(-1001)
+            manager._state["sessions"]["mirror:ttys035"] = {
+                "route_kind": "mirror",
+                "route_target": "ttys035",
+                "label": "ttys035",
+                "kind": "mirror",
+                "state": "running",
+                "_stale_topics": [
+                    {
+                        "topic_id": 41,
+                        "chat_id": -1001,
+                        "status_message_id": 11,
+                        "topic_bump_message_id": 12,
+                        "topic_title": "🟢 ttys035",
+                        "label": "ttys035",
+                    }
+                ],
+            }
+
+            handled = asyncio.run(manager._flush_stale_topic_cleanup())
+
+            self.assertTrue(handled)
+            self.assertNotIn("_stale_topics", manager._state["sessions"]["mirror:ttys035"])
+            self.assertEqual(
+                bot.calls,
+                [
+                    ("delete_message", {"chat_id": -1001, "message_id": 11}),
+                    ("delete_message", {"chat_id": -1001, "message_id": 12}),
+                    (
+                        "edit_forum_topic",
+                        {"chat_id": -1001, "message_thread_id": 41, "name": "⚫ archived | ttys035"},
+                    ),
+                    (
+                        "close_forum_topic",
+                        {"chat_id": -1001, "message_thread_id": 41},
+                    ),
+                ],
+            )
 
 
 if __name__ == "__main__":

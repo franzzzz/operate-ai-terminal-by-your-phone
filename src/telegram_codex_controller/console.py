@@ -446,6 +446,7 @@ class TelegramConsoleManager:
         record = self._state.get("sessions", {}).setdefault(route.label, {})
         record["route_kind"] = route.kind
         record["route_target"] = route.target
+        self._queue_stale_topic_cleanup(record, new_topic_id=message_thread_id)
         record["topic_id"] = message_thread_id
         record["status_message_id"] = None
         record["topic_bump_message_id"] = None
@@ -497,6 +498,14 @@ class TelegramConsoleManager:
                 "kind": route.kind,
             },
         )
+        if record.get("topic_id"):
+            if topic_name:
+                normalized_topic_name = topic_name[:128]
+                if normalized_topic_name != record.get("topic_title"):
+                    record["_pending_topic_title"] = normalized_topic_name
+                    self._mark_session_dirty(route.label, record, immediate=True)
+                    self._persist()
+            return int(record["topic_id"])
         topic = await self._create_topic(self._console_chat_id(), topic_name or self._session_topic_name(record))
         record["topic_id"] = topic.message_thread_id
         record["topic_title"] = topic_name or self._session_topic_name(record)
@@ -946,6 +955,10 @@ class TelegramConsoleManager:
             if handled:
                 return
 
+        handled = await self._flush_stale_topic_cleanup()
+        if handled:
+            return
+
         await self._flush_topic_bump()
 
     async def _flush_session(self, route_label: str) -> bool:
@@ -1386,6 +1399,90 @@ class TelegramConsoleManager:
         self._pending_status_due_monotonic[route_label] = due
         self._dirty_session_routes.add(route_label)
 
+    def _queue_stale_topic_cleanup(self, record: dict[str, Any], *, new_topic_id: int | None) -> None:
+        old_topic_id = record.get("topic_id")
+        if old_topic_id is None or old_topic_id == new_topic_id:
+            return
+        stale_topics = record.setdefault("_stale_topics", [])
+        for item in stale_topics:
+            if item.get("topic_id") == old_topic_id:
+                return
+        stale_topics.append(
+            {
+                "topic_id": old_topic_id,
+                "chat_id": record.get("status_chat_id") or self._console_chat_id(),
+                "status_message_id": record.get("status_message_id"),
+                "topic_bump_message_id": record.get("topic_bump_message_id"),
+                "topic_title": record.get("topic_title") or "",
+                "label": record.get("label") or record.get("route_target") or "?",
+            }
+        )
+
+    async def _flush_stale_topic_cleanup(self) -> bool:
+        if self._application is None or not self.forum_enabled():
+            return False
+        for route_label, record in self._state.get("sessions", {}).items():
+            stale_topics = record.get("_stale_topics")
+            if not stale_topics:
+                continue
+            stale = stale_topics[0]
+            topic_id = stale.get("topic_id")
+            if topic_id is None:
+                stale_topics.pop(0)
+                if not stale_topics:
+                    record.pop("_stale_topics", None)
+                self._persist()
+                return False
+
+            chat_id = int(stale.get("chat_id") or self._console_chat_id())
+            status_message_id = stale.get("status_message_id")
+            topic_bump_message_id = stale.get("topic_bump_message_id")
+            archived_title = _archived_topic_title(stale)
+            now = time.monotonic()
+            try:
+                if status_message_id:
+                    with contextlib.suppress(BadRequest):
+                        await self._application.bot.delete_message(
+                            chat_id=chat_id,
+                            message_id=int(status_message_id),
+                        )
+                if topic_bump_message_id and topic_bump_message_id != status_message_id:
+                    with contextlib.suppress(BadRequest):
+                        await self._application.bot.delete_message(
+                            chat_id=chat_id,
+                            message_id=int(topic_bump_message_id),
+                        )
+                with contextlib.suppress(BadRequest):
+                    await self._application.bot.edit_forum_topic(
+                        chat_id=chat_id,
+                        message_thread_id=int(topic_id),
+                        name=archived_title,
+                    )
+                with contextlib.suppress(BadRequest):
+                    await self._application.bot.close_forum_topic(
+                        chat_id=chat_id,
+                        message_thread_id=int(topic_id),
+                    )
+                stale_topics.pop(0)
+                if not stale_topics:
+                    record.pop("_stale_topics", None)
+                self._record_write(now, state=str(record.get("state", "")), urgent=True)
+                self._persist()
+                LOG.info("Archived stale topic %s for %s", topic_id, route_label)
+                return True
+            except RetryAfter as exc:
+                self._enter_write_backoff(float(exc.retry_after) + 1)
+                LOG.info("Stale topic cleanup backed off for %.1fs", float(exc.retry_after))
+                return False
+            except TelegramError:
+                LOG.exception("Failed to archive stale topic %s for %s", topic_id, route_label)
+                stale_topics.pop(0)
+                if not stale_topics:
+                    record.pop("_stale_topics", None)
+                self._persist()
+                return False
+        return False
+
     def _has_urgent_topic_bump(self) -> bool:
         return any(
             _topic_bump_priority(self._topic_bump_reason_by_route.get(route_label, "activity"))
@@ -1559,6 +1656,13 @@ def _topic_bump_text(record: dict[str, Any], *, reason: str, when_iso: str) -> s
     if reason == "stuck":
         return f"⏱ {label} | stuck | {timestamp}"
     return f"{_state_emoji(state)} {label} | {state} | {detail} | {timestamp}"
+
+
+def _archived_topic_title(stale: dict[str, Any]) -> str:
+    label = str(stale.get("label") or stale.get("topic_title") or "?").strip()
+    if label.startswith(("🟢 ", "🟡 ", "🔴 ", "✅ ", "⚫ ", "⚪ ", "🔵 ")):
+        label = label[2:].strip()
+    return f"⚫ archived | {label}"[:128]
 
 
 def _topic_title(record: dict[str, Any]) -> str:
