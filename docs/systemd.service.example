@@ -1,12 +1,12 @@
 [Unit]
-Description=Telegram Codex Controller
+Description=Pocket Operator
 After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/telegram-codex-controller
-EnvironmentFile=/opt/telegram-codex-controller/.env
-ExecStart=/opt/telegram-codex-controller/.venv/bin/python -m telegram_codex_controller.main
+WorkingDirectory=/opt/pocket-operator
+EnvironmentFile=/opt/pocket-operator/.env
+ExecStart=/opt/pocket-operator/.venv/bin/python -m pocket_operator.main
 Restart=always
 RestartSec=5
 User=youruser

@@ -13,7 +13,7 @@ Without a mobile console, you usually have two bad options:
 
 ## Why This Project Helps
 
-With `telegram-codex-controller`, you can:
+With `Pocket Operator`, you can:
 
 - launch the job in `tmux`
 - keep one topic dedicated to that build

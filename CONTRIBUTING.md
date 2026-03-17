@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for contributing to `telegram-codex-controller`.
+Thanks for contributing to `Pocket Operator`.
 
 ## What This Project Optimizes For
 

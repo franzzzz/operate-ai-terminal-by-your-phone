@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security issue
-    url: https://github.com/franzzzz/operate-ai-terminal-by-your-phone/security
+    url: https://github.com/franzzzz/pocket-operator/security
     about: Do not file public issues for sensitive security problems.

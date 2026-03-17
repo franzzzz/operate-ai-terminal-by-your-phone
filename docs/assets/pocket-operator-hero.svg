@@ -1,0 +1,50 @@
+<svg width="1400" height="820" viewBox="0 0 1400 820" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="820" fill="#0B1220"/>
+  <rect x="40" y="40" width="1320" height="740" rx="32" fill="url(#bg)"/>
+  <text x="90" y="125" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="52" font-weight="700">Pocket Operator</text>
+  <text x="90" y="170" fill="#C7D2FE" font-family="Arial, sans-serif" font-size="24">Take over a running Codex session from your phone.</text>
+
+  <rect x="90" y="230" width="520" height="470" rx="26" fill="#111827" stroke="#334155" stroke-width="2"/>
+  <text x="120" y="275" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="24" font-weight="700">Telegram / INDEX</text>
+  <rect x="120" y="300" width="460" height="56" rx="16" fill="#1D4ED8"/>
+  <text x="145" y="336" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="21" font-weight="700">INDEX</text>
+  <text x="120" y="395" fill="#F87171" font-family="Arial, sans-serif" font-size="22">🔴 billing-ui | error | payment step failed</text>
+  <text x="120" y="445" fill="#FACC15" font-family="Arial, sans-serif" font-size="22">🟡 research-ops | waiting | reply needed</text>
+  <text x="120" y="495" fill="#4ADE80" font-family="Arial, sans-serif" font-size="22">🟢 claim-validator | running | processing</text>
+  <text x="120" y="545" fill="#4ADE80" font-family="Arial, sans-serif" font-size="22">🟢 oracle-chat-link | running | same session alive</text>
+  <rect x="120" y="600" width="210" height="46" rx="14" fill="#1E293B"/>
+  <rect x="350" y="600" width="230" height="46" rx="14" fill="#1E293B"/>
+  <text x="155" y="630" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="18">Refresh INDEX</text>
+  <text x="390" y="630" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="18">Recent Errors</text>
+
+  <rect x="720" y="170" width="280" height="560" rx="34" fill="#020617" stroke="#475569" stroke-width="3"/>
+  <rect x="742" y="205" width="236" height="500" rx="24" fill="#111827"/>
+  <text x="770" y="245" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="22" font-weight="700">oracle-chat-link</text>
+  <text x="770" y="280" fill="#4ADE80" font-family="Arial, sans-serif" font-size="20">🟢 running</text>
+  <text x="770" y="322" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="17">Step: waiting for follow-up</text>
+  <text x="770" y="362" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="16">Summary:</text>
+  <text x="770" y="394" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="16">- local Codex session is still alive</text>
+  <text x="770" y="422" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="16">- operator stepped away from desk</text>
+  <text x="770" y="450" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="16">- Telegram is ready to route the next reply</text>
+  <rect x="770" y="520" width="190" height="42" rx="13" fill="#2563EB"/>
+  <rect x="770" y="575" width="190" height="42" rx="13" fill="#1E293B"/>
+  <text x="815" y="548" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="18" font-weight="700">Continue</text>
+  <text x="820" y="603" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="18">Recent</text>
+
+  <rect x="1040" y="260" width="220" height="210" rx="22" fill="#111827" stroke="#334155" stroke-width="2"/>
+  <text x="1070" y="302" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="22" font-weight="700">ALERTS</text>
+  <text x="1070" y="350" fill="#FACC15" font-family="Arial, sans-serif" font-size="18">🟡 ready for input</text>
+  <text x="1070" y="388" fill="#F87171" font-family="Arial, sans-serif" font-size="18">🔴 error surfaced</text>
+  <text x="1070" y="426" fill="#4ADE80" font-family="Arial, sans-serif" font-size="18">✅ task completed</text>
+
+  <text x="1040" y="560" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="26" font-weight="700">Phone-first control plane</text>
+  <text x="1040" y="602" fill="#C7D2FE" font-family="Arial, sans-serif" font-size="18">Reply to a blocked Codex session</text>
+  <text x="1040" y="632" fill="#C7D2FE" font-family="Arial, sans-serif" font-size="18">without SSH or remote desktop.</text>
+
+  <defs>
+    <linearGradient id="bg" x1="40" y1="40" x2="1360" y2="780" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+</svg>

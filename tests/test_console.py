@@ -8,10 +8,10 @@ from pathlib import Path
 
 from telegram import InlineKeyboardMarkup
 
-from telegram_codex_controller.config import Settings
-from telegram_codex_controller.console import SessionStatusSpec, TelegramConsoleManager
-from telegram_codex_controller.reply_routes import ReplyRoute, parse_reply_route
-from telegram_codex_controller.terminal_mirror import TerminalMirrorManager
+from pocket_operator.config import Settings
+from pocket_operator.console import SessionStatusSpec, TelegramConsoleManager
+from pocket_operator.reply_routes import ReplyRoute, parse_reply_route
+from pocket_operator.terminal_mirror import TerminalMirrorManager
 
 
 class FakeApplication:

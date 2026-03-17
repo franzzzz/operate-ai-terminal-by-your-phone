@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.example.telegram-codex-controller</string>
+    <string>com.example.pocket-operator</string>
 
     <!-- Replace . with your project root when adapting this example locally. -->
 
@@ -11,7 +11,7 @@
     <array>
         <string>/bin/zsh</string>
         <string>-lc</string>
-        <string>cd . && source .venv/bin/activate && export PYTHONPATH=./src:${PYTHONPATH:-} && python -m telegram_codex_controller.main</string>
+        <string>cd . && source .venv/bin/activate && export PYTHONPATH=./src:${PYTHONPATH:-} && python -m pocket_operator.main</string>
     </array>
 
     <key>WorkingDirectory</key>

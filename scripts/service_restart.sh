@@ -2,9 +2,19 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-LABEL="${TGC_LAUNCHD_LABEL:-com.linfwang.telegram-codex-controller}"
-PLIST_PATH="${TGC_LAUNCHD_PLIST:-$HOME/Library/LaunchAgents/${LABEL}.plist}"
 DOMAIN="gui/$(id -u)"
+DEFAULT_LABEL="com.example.pocket-operator"
+LEGACY_LABEL="com.linfwang.telegram-codex-controller"
+
+if [[ -n "${TGC_LAUNCHD_LABEL:-}" ]]; then
+  LABEL="${TGC_LAUNCHD_LABEL}"
+elif launchctl print "${DOMAIN}/${LEGACY_LABEL}" >/dev/null 2>&1; then
+  LABEL="${LEGACY_LABEL}"
+else
+  LABEL="${DEFAULT_LABEL}"
+fi
+
+PLIST_PATH="${TGC_LAUNCHD_PLIST:-$HOME/Library/LaunchAgents/${LABEL}.plist}"
 
 mkdir -p "${ROOT_DIR}/logs"
 

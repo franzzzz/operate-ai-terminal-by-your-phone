@@ -1,5 +1,5 @@
 {
-  "name": "telegram-codex-controller-sidecar",
+  "name": "pocket-operator-sidecar",
   "private": true,
   "type": "module",
   "dependencies": {

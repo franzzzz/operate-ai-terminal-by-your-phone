@@ -1,13 +1,13 @@
 # Pocket Operator
 
-[![CI](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/franzzzz/operate-ai-terminal-by-your-phone)](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/releases)
-[![License](https://img.shields.io/github/license/franzzzz/operate-ai-terminal-by-your-phone)](LICENSE)
-[![Last Commit](https://img.shields.io/github/last-commit/franzzzz/operate-ai-terminal-by-your-phone)](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/commits/main)
+[![CI](https://github.com/franzzzz/pocket-operator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/franzzzz/pocket-operator/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/franzzzz/pocket-operator)](https://github.com/franzzzz/pocket-operator/releases)
+[![License](https://img.shields.io/github/license/franzzzz/pocket-operator)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/franzzzz/pocket-operator)](https://github.com/franzzzz/pocket-operator/commits/main)
 
 Leave your desk, keep your Codex session alive, and reply from your phone.
 
-`Pocket Operator` is the product name. `telegram-codex-controller` remains the repository and Python package name.
+`Pocket Operator` is now the product name and the primary repository name. The legacy Python import path `telegram_codex_controller` remains temporarily supported for compatibility, while the forward-looking module path is `pocket_operator`.
 
 It turns Telegram into a practical mobile console for Codex and other terminal-based agents running on your own machine. The core use case is simple:
 
@@ -21,6 +21,8 @@ This is not a raw stdout mirror. It gives you:
 
 **Dogfooding proof:** the project itself was developed entirely over Telegram from a phone.
 
+![Pocket Operator preview](docs/assets/pocket-operator-hero.svg)
+
 Start here:
 
 - [3-minute fast demo](#3-minute-fast-demo)
@@ -32,6 +34,18 @@ Start here:
 - [Use case: overnight build watcher](docs/use-case-overnight-build-watcher.md)
 - [Use case: mobile research monitor](docs/use-case-mobile-research-monitor.md)
 - [Use case: multi-agent operations console](docs/use-case-multi-agent-operations-console.md)
+
+Screenshots:
+
+- [INDEX preview](docs/assets/pocket-operator-index.svg)
+- [Session preview](docs/assets/pocket-operator-session.svg)
+- [ALERTS preview](docs/assets/pocket-operator-alerts.svg)
+
+![INDEX preview](docs/assets/pocket-operator-index.svg)
+
+![Session preview](docs/assets/pocket-operator-session.svg)
+
+![ALERTS preview](docs/assets/pocket-operator-alerts.svg)
 
 ## The Killer Use Case
 
@@ -510,7 +524,7 @@ If you want the shortest setup path:
 Run in the foreground:
 
 ```bash
-PYTHONPATH=src python -m telegram_codex_controller.main
+PYTHONPATH=src python -m pocket_operator.main
 ```
 
 Or use the helper script:
@@ -718,9 +732,9 @@ Sample files:
 Typical macOS flow:
 
 ```bash
-cp docs/launchd.plist.example ~/Library/LaunchAgents/com.example.telegram-codex-controller.plist
-launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.example.telegram-codex-controller.plist
-launchctl kickstart -k gui/$(id -u)/com.example.telegram-codex-controller
+cp docs/launchd.plist.example ~/Library/LaunchAgents/com.example.pocket-operator.plist
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.example.pocket-operator.plist
+launchctl kickstart -k gui/$(id -u)/com.example.pocket-operator
 ```
 
 ### Service helper scripts
@@ -732,7 +746,7 @@ This repository now includes two operational helper scripts:
 ./scripts/service_restart.sh
 ```
 
-The sample LaunchAgent label used in this documentation is `com.example.telegram-codex-controller`.
+The sample LaunchAgent label used in this documentation is `com.example.pocket-operator`.
 
 If you use a different LaunchAgent label or plist path, override them with:
 
@@ -743,8 +757,8 @@ If you use a different LaunchAgent label or plist path, override them with:
 Examples:
 
 ```bash
-TGC_LAUNCHD_LABEL=com.example.telegram-codex-controller ./scripts/service_status.sh
-TGC_LAUNCHD_PLIST=$HOME/Library/LaunchAgents/com.example.telegram-codex-controller.plist ./scripts/service_restart.sh
+TGC_LAUNCHD_LABEL=com.example.pocket-operator ./scripts/service_status.sh
+TGC_LAUNCHD_PLIST=$HOME/Library/LaunchAgents/com.example.pocket-operator.plist ./scripts/service_restart.sh
 ```
 
 ### Daily operations
@@ -797,7 +811,7 @@ Without forum mode, the same architecture still works in a single chat, but sess
 ## Project structure
 
 ```text
-telegram-codex-controller/
+pocket-operator/
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── .env.example
@@ -824,6 +838,7 @@ telegram-codex-controller/
 │   ├── run.sh
 │   └── run_service.sh
 └── src/
+    ├── pocket_operator/
     └── telegram_codex_controller/
         ├── assistant_sessions.py
         ├── __init__.py

@@ -2,7 +2,7 @@
 
 ## Scope
 
-`telegram-codex-controller` can control local sessions on your machine. That makes it operationally powerful and security-sensitive.
+`Pocket Operator` can control local sessions on your machine. That makes it operationally powerful and security-sensitive.
 
 This document describes the trust model, data boundaries, recommended safeguards, and how to report vulnerabilities.
 

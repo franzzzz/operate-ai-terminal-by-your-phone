@@ -1,0 +1,9 @@
+<svg width="1000" height="420" viewBox="0 0 1000 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1000" height="420" fill="#0F172A"/>
+  <rect x="60" y="60" width="880" height="300" rx="28" fill="#111827" stroke="#334155" stroke-width="2"/>
+  <text x="100" y="118" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="32" font-weight="700">ALERTS</text>
+  <text x="100" y="156" fill="#93C5FD" font-family="Arial, sans-serif" font-size="18">Only the things that need attention now.</text>
+  <text x="100" y="228" fill="#FACC15" font-family="Arial, sans-serif" font-size="24">🟡 research-agent | ready for input</text>
+  <text x="100" y="278" fill="#F87171" font-family="Arial, sans-serif" font-size="24">🔴 billing-ui | validation failed</text>
+  <text x="100" y="328" fill="#4ADE80" font-family="Arial, sans-serif" font-size="24">✅ nightly-build | finished</text>
+</svg>

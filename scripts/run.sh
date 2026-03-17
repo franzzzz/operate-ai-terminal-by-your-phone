@@ -14,4 +14,4 @@ if [[ -f "$ROOT_DIR/sidecar/package.json" ]]; then
   (cd "$ROOT_DIR/sidecar" && npm install)
 fi
 export PYTHONPATH="$ROOT_DIR/src:${PYTHONPATH:-}"
-python -m telegram_codex_controller.main
+python -m pocket_operator.main

@@ -4,8 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from telegram_codex_controller.assistant_sessions import AssistantSessionManager
-from telegram_codex_controller.config import Settings
+from pocket_operator.assistant_sessions import AssistantSessionManager
+from pocket_operator.config import Settings
 
 
 class AssistantSessionManagerTests(unittest.TestCase):

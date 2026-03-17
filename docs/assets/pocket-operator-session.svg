@@ -1,0 +1,18 @@
+<svg width="1000" height="620" viewBox="0 0 1000 620" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1000" height="620" fill="#0F172A"/>
+  <rect x="320" y="40" width="360" height="540" rx="34" fill="#020617" stroke="#475569" stroke-width="3"/>
+  <rect x="346" y="82" width="308" height="456" rx="24" fill="#111827"/>
+  <text x="374" y="126" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="24" font-weight="700">oracle-chat-link</text>
+  <text x="374" y="162" fill="#4ADE80" font-family="Arial, sans-serif" font-size="19">🟢 running</text>
+  <text x="374" y="206" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="17">Step: waiting for operator input</text>
+  <text x="374" y="244" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="16">Summary:</text>
+  <text x="374" y="276" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="15">- session is already running locally</text>
+  <text x="374" y="304" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="15">- mobile operator can continue it now</text>
+  <text x="374" y="332" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="15">- no context rebuild required</text>
+  <rect x="374" y="408" width="126" height="42" rx="13" fill="#2563EB"/>
+  <rect x="514" y="408" width="126" height="42" rx="13" fill="#1E293B"/>
+  <rect x="444" y="464" width="126" height="42" rx="13" fill="#1E293B"/>
+  <text x="402" y="435" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="17" font-weight="700">Continue</text>
+  <text x="542" y="435" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="17">Refresh</text>
+  <text x="478" y="491" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="17">Recent</text>
+</svg>

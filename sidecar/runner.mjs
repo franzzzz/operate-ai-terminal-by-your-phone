@@ -55,7 +55,7 @@ async function resolveExecutable(name) {
 async function prepareCodexEnvironment() {
   const realHome = os.homedir();
   const realCodexDir = path.join(realHome, '.codex');
-  const isolatedCodexDir = path.join(os.tmpdir(), 'telegram-codex-controller-codex-home');
+  const isolatedCodexDir = path.join(os.tmpdir(), 'pocket-operator-codex-home');
 
   await fs.mkdir(isolatedCodexDir, { recursive: true });
 
@@ -78,7 +78,7 @@ async function prepareCodexEnvironment() {
 }
 
 async function prepareClaudeEnvironment() {
-  const isolatedConfigDir = path.join(os.tmpdir(), 'telegram-codex-controller-claude-config');
+  const isolatedConfigDir = path.join(os.tmpdir(), 'pocket-operator-claude-config');
   const debugLogPath = path.join(isolatedConfigDir, 'debug', 'sdk.log');
 
   await fs.mkdir(path.dirname(debugLogPath), { recursive: true });

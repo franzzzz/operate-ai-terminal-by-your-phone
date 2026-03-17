@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT_DIR"
 
-LABEL="${TGC_LAUNCHD_LABEL:-com.example.telegram-codex-controller}"
+LABEL="${TGC_LAUNCHD_LABEL:-com.example.pocket-operator}"
 PLIST_PATH="${TGC_LAUNCHD_PLIST:-$HOME/Library/LaunchAgents/${LABEL}.plist}"
 
 ./scripts/install.sh

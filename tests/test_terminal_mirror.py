@@ -6,8 +6,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from telegram_codex_controller.config import Settings
-from telegram_codex_controller.terminal_mirror import TerminalMirrorManager, TerminalTarget, _compute_delta
+from pocket_operator.config import Settings
+from pocket_operator.terminal_mirror import TerminalMirrorManager, TerminalTarget, _compute_delta
 
 
 def make_settings(root: Path) -> Settings:
