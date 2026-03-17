@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/github/license/franzzzz/operate-ai-terminal-by-your-phone)](LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/franzzzz/operate-ai-terminal-by-your-phone)](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/commits/main)
 
-Take over long-running Codex sessions from your phone.
+Leave your desk, keep your Codex session alive, and reply from your phone.
 
 `Pocket Operator` is the product name. `telegram-codex-controller` remains the repository and Python package name.
 
@@ -16,15 +16,15 @@ It turns Telegram into a practical mobile console for Codex and other terminal-b
 This is not a raw stdout mirror. It gives you:
 
 - one editable session card instead of endless log spam
-- a dedicated `INDEX` for overview and `ALERTS` for action
-- direct reply routing back into the correct running session
-- mobile-friendly control of sessions that are already running
-- explicit handling for waiting, error, done, and stuck states
+- direct reply routing back into the exact running session
+- `INDEX + ALERTS + one topic per session` when you need a full mobile console
 
 **Dogfooding proof:** the project itself was developed entirely over Telegram from a phone.
 
 Start here:
 
+- [3-minute fast demo](#3-minute-fast-demo)
+- [15-minute full console](#15-minute-full-console)
 - [Quick deployment](#quick-deployment)
 - [Security model](SECURITY.md)
 - [30-second demo script](docs/demo-script-30s.md)
@@ -50,6 +50,14 @@ That is the product:
 - see the current state clearly
 - send the next instruction from Telegram
 - continue the same line of work without reopening everything
+
+## Why Not SSH?
+
+| Option | Works well for | Friction on a phone | Why Pocket Operator exists |
+|---|---|---|---|
+| SSH | full terminal control | too much raw output, weak prioritization, awkward on mobile | Pocket Operator is optimized for session status and intervention, not full shell work |
+| Remote desktop | visual access to the exact desktop | clumsy on mobile, too much UI overhead | Pocket Operator gives you a purpose-built mobile control surface |
+| Pocket Operator | continuing a running Codex session | narrower scope than a full shell by design | that narrower scope is what makes it fast and usable on a phone |
 
 ## What It Also Supports
 
@@ -306,6 +314,61 @@ If notes are left empty, GitHub release notes are generated automatically.
 - a Telegram supergroup with Topics enabled if you want the recommended one-topic-per-session layout
 
 ## Quick Deployment
+
+Choose one of these paths:
+
+- **3-minute fast demo** if you want to prove the core value quickly
+- **15-minute full console** if you want the complete `INDEX + ALERTS + topics` workflow
+
+### 3-Minute Fast Demo
+
+If you want the shortest possible path to the core experience, do this:
+
+1. Run:
+
+```bash
+./scripts/install.sh
+./scripts/doctor.sh
+```
+
+2. Edit `.env` and set:
+   - `TELEGRAM_BOT_TOKEN`
+   - `AUTHORIZED_USER_IDS`
+
+3. Start the controller:
+
+```bash
+./scripts/run_service.sh
+```
+
+4. In `Terminal.app`, run the deterministic demo session:
+
+```bash
+./scripts/demo_phone_takeover.sh
+```
+
+5. Open Telegram, talk to the bot, and route a reply back into that same terminal session.
+
+This is the fastest way to prove the core promise:
+
+> the same local session keeps going after you leave the desk.
+
+### 15-Minute Full Console
+
+If you want the full product shape instead of a quick trial:
+
+- create a private Telegram supergroup
+- enable Topics / Forum
+- add the bot
+- run `/forum_on`
+- run `/forum_bootstrap`
+- use `INDEX`, `ALERTS`, and one topic per session
+
+This is the mode to use when you want:
+
+- multiple concurrent sessions
+- better mobile information hierarchy
+- ongoing operations, not just a one-off demo
 
 These steps are written for first-time setup with the recommended product shape:
 
@@ -753,6 +816,7 @@ telegram-codex-controller/
 │   └── use-case-overnight-build-watcher.md
 ├── scripts/
 │   ├── bootstrap.sh
+│   ├── demo_phone_takeover.sh
 │   ├── doctor.sh
 │   ├── install.sh
 │   ├── service_restart.sh
