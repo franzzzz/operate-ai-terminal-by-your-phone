@@ -5,58 +5,76 @@
 [![License](https://img.shields.io/github/license/franzzzz/operate-ai-terminal-by-your-phone)](LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/franzzzz/operate-ai-terminal-by-your-phone)](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/commits/main)
 
-Turn Telegram into a mobile control console for Codex, Claude, and other terminal-based agents running on your computer.
+Take over long-running Codex sessions from your phone.
 
-This is not a simple stdout forwarder. It packages multi-session status, alerts, human handoff, log export, and reply routing into a workflow that is practical to use from your phone:
+`telegram-codex-controller` turns Telegram into a practical mobile console for Codex and other terminal-based agents running on your own machine. The core use case is simple:
 
-- monitor multiple Codex or agent sessions in parallel
-- start new Codex, `tmux`, or SDK-backed sessions from Telegram
-- take over existing Codex windows already running in macOS `Terminal.app`
-- keep one editable status card per session instead of flooding chat
-- organize work with `INDEX + ALERTS + one topic per session`
-- send input back to the correct session by replying to a card or typing inside its topic
-- ship full logs as `.log` documents instead of pasting large text blocks
-- restrict control to approved Telegram users only
+> you start a Codex session on your computer, step away from your desk, and still want to monitor it, answer it, continue it, and recover it from your phone.
+
+This is not a raw stdout mirror. It gives you:
+
+- one editable session card instead of endless log spam
+- a dedicated `INDEX` for overview and `ALERTS` for action
+- direct reply routing back into the correct running session
+- mobile-friendly control of sessions that are already running
+- explicit handling for waiting, error, done, and stuck states
 
 **Dogfooding proof:** the project itself was developed entirely over Telegram from a phone.
 
-## Product Overview
+Start here:
 
-`telegram-codex-controller` is a remote-control layer for local agent workflows. It is designed for people who already run Codex, Claude, research scripts, or long-lived build tasks on their own machine and want a clean mobile control plane instead of raw logs.
+- [Quick deployment](#quick-deployment)
+- [Security model](SECURITY.md)
+- [30-second demo script](docs/demo-script-30s.md)
+- [Use case: overnight build watcher](docs/use-case-overnight-build-watcher.md)
+- [Use case: mobile research monitor](docs/use-case-mobile-research-monitor.md)
+- [Use case: multi-agent operations console](docs/use-case-multi-agent-operations-console.md)
 
-It supports three complementary operating modes:
+## The Killer Use Case
 
-1. **Take over existing windows**
-   Mirror Codex sessions that are already running in macOS `Terminal.app`, then send follow-up input from Telegram.
-2. **Start new long-running jobs**
-   Launch named `tmux` sessions from Telegram so tasks stay alive independently of your current shell.
-3. **Drive new SDK-backed conversations**
-   Start and continue Codex or Claude sessions through the sidecar runner while keeping them inside the same Telegram console.
+Most remote-development tools assume you want a full remote shell. That is not the problem this project solves.
 
-The product goal is not to replace SSH. The goal is to make these common remote actions fast and structured:
+The problem is narrower and more common:
 
-- see which session is active, waiting, stuck, done, or broken
-- intervene quickly when a task needs human input, login, approval, or clarification
-- manage several sessions without losing context on a small phone screen
-- keep existing desktop work intact instead of migrating everything into a new tool
+1. you already have a valuable local Codex session running
+2. you leave your desk
+3. the session keeps working, blocks on human input, or needs a follow-up instruction
+4. you want to handle that from your phone without losing the original session context
 
-## Why This Tool Is Useful
+That is the product:
 
-If you already run agent workflows locally, the hardest part is often not starting tasks. The hard part is everything that happens after launch:
+- keep the existing session
+- see the current state clearly
+- send the next instruction from Telegram
+- continue the same line of work without reopening everything
 
-- you leave your desk and lose visibility into progress
-- multiple windows become hard to distinguish on a phone
-- a task pauses for human input and you do not notice in time
-- normal output and real problems are mixed together
-- the only fallback is reading a stream of raw terminal text
+## What It Also Supports
 
-This project turns that into a structured mobile console:
+The main use case is existing-session takeover, but the project also supports:
 
-- **Clear status**: one session card per workflow, one supergroup for the whole console
-- **Clear priority**: `INDEX` for overview, `ALERTS` for action, session topics for detail
-- **Low noise**: cards are edited in place instead of creating endless new messages
-- **Direct intervention**: waiting states, reply routing, and explicit `/send`
-- **Preserved desktop context**: new tasks and already-running windows can live together
+1. **New long-running jobs**
+   Start named `tmux` tasks from Telegram and keep them alive independently of your current shell.
+2. **SDK-backed sessions**
+   Start and continue Codex or Claude SDK sessions through the sidecar runner.
+3. **Multi-session operations**
+   Run a Telegram supergroup as a compact multi-agent control console with one topic per session.
+
+## Why It Matters
+
+If you already run Codex, Claude, research scripts, or builds locally, the hardest part usually starts after launch:
+
+- you lose visibility as soon as you leave the machine
+- multiple sessions become hard to distinguish on a phone
+- a task pauses for input and you do not notice in time
+- the fallback is reading noisy terminal output with no hierarchy
+
+This project turns that into a cleaner mobile workflow:
+
+- **Clear status**: one session card per workflow
+- **Clear priority**: `INDEX` for overview, `ALERTS` for intervention
+- **Low noise**: cards are edited in place
+- **Direct intervention**: respond from Telegram without recreating the session
+- **Preserved context**: keep the exact local session that is already doing useful work
 
 ## Good Fit Scenarios
 
@@ -247,7 +265,7 @@ Recommended mobile flow:
 1. Watch the editable `INDEX` message for overall state.
 2. Use the `INDEX` buttons to refresh the overview, surface recent errors, or open a specific session.
 3. Watch `ALERTS` for errors, waiting-for-human-input, completion, and stuck sessions.
-4. Use the inline buttons on a session card for refresh, tail, logs, focus, and stop.
+4. Use the inline buttons on a session card for continue, refresh, recent output, focus, and stop.
 5. Reply directly to that session card, or type inside that session topic, when you need to send text back into the session.
 
 The bot also registers high-frequency commands through `setMyCommands`, so they appear directly in Telegram’s command picker.
@@ -411,6 +429,16 @@ Deployment notes:
   They can be created automatically during bootstrap or bound later with `/index_here` and `/alerts_here`
 - If you are the only operator, `MIRROR_CHAT_IDS` usually only needs your own user id
 
+### Fast path
+
+If you want the shortest setup path:
+
+```bash
+./scripts/install.sh
+./scripts/doctor.sh
+./scripts/bootstrap.sh
+```
+
 ### Step 7: Start the service
 
 Run in the foreground:
@@ -544,6 +572,8 @@ All configuration is done via environment variables.
 | `CONSOLE_PIN_STATUS_MESSAGES` | no | `false` | Pin each session status card when created |
 
 ## Security notes
+
+For the full security model, see [SECURITY.md](SECURITY.md).
 
 This bot can control your development machine. Use it carefully.
 
@@ -702,15 +732,26 @@ Without forum mode, the same architecture still works in a single chat, but sess
 
 ```text
 telegram-codex-controller/
+├── CHANGELOG.md
+├── CONTRIBUTING.md
 ├── .env.example
 ├── README.md
+├── SECURITY.md
 ├── requirements.txt
 ├── sidecar/
 │   ├── package.json
 │   └── runner.mjs
 ├── docs/
-│   └── systemd.service.example
+│   ├── demo-script-30s.md
+│   ├── launchd.plist.example
+│   ├── systemd.service.example
+│   ├── use-case-mobile-research-monitor.md
+│   ├── use-case-multi-agent-operations-console.md
+│   └── use-case-overnight-build-watcher.md
 ├── scripts/
+│   ├── bootstrap.sh
+│   ├── doctor.sh
+│   ├── install.sh
 │   ├── service_restart.sh
 │   ├── service_status.sh
 │   ├── run.sh
