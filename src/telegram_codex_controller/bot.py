@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import html
 
 from telegram import BotCommand, Update
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
@@ -9,12 +10,12 @@ from telegram.ext import Application, CallbackQueryHandler, CommandHandler, Cont
 from .assistant_sessions import AssistantSessionManager
 from .console import SessionStatusSpec, TelegramConsoleManager
 from .config import Settings
-from .reply_routes import ReplyRoute, lookup_reply_route, send_chunked_message
+from .reply_routes import ReplyRoute, lookup_reply_route, remember_reply_route, send_chunked_message
 from .security import ensure_authorized
 from .session_manager import SessionManager
 from .terminal_mirror import TerminalMirrorManager, _classify_state
 from .tmux_monitor import TmuxSessionMonitor, _infer_state_and_summary
-from .utils import coalesce_args, compact_summary_text, tail_lines
+from .utils import chunk_text, coalesce_args, compact_summary_text, tail_lines
 
 
 HELP_TEXT = """Telegram Codex Controller
@@ -80,6 +81,39 @@ async def _send_chunked_text(
         message_thread_id=message_thread_id,
         route=route,
     )
+
+
+def _format_actor_message(actor: str, text: str, *, label: str | None = None) -> tuple[str, str | None]:
+    body = text.strip() or "-"
+    if actor == "user":
+        return f"<b>{html.escape(label or 'You')}</b>\n{html.escape(body)}", "HTML"
+    if actor == "codex":
+        return f"<b>{html.escape(label or 'Codex')}</b>\n<pre>{html.escape(body)}</pre>", "HTML"
+    return body, None
+
+
+async def _send_actor_message(
+    application: Application,
+    chat_id: int,
+    *,
+    actor: str,
+    text: str,
+    label: str | None = None,
+    route: ReplyRoute | None = None,
+    message_thread_id: int | None = None,
+) -> None:
+    settings = application.bot_data["settings"]
+    chunk_budget = max(200, settings.max_message_chars - 80)
+    for raw_chunk in chunk_text(text.strip() or "-", chunk_budget):
+        payload, parse_mode = _format_actor_message(actor, raw_chunk, label=label)
+        sent = await application.bot.send_message(
+            chat_id=chat_id,
+            message_thread_id=message_thread_id,
+            text=payload,
+            parse_mode=parse_mode,
+        )
+        if route is not None:
+            remember_reply_route(application, chat_id, sent.message_id, route)
 
 
 async def _send_chunked(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str) -> None:
@@ -924,10 +958,13 @@ async def tail_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.effective_chat.send_message(f"Failed to read session summary: {exc}")
         return
 
-    await _send_chunked_text(
+    actor_label = "Codex" if route.kind in {"mirror", "agent"} else "Output"
+    await _send_actor_message(
         context.application,
         update.effective_chat.id,
-        f"Tail for '{identifier}':\n\n{compact_summary_text(payload, max_lines=line_limit, max_line_length=110)}",
+        actor="codex",
+        label=actor_label,
+        text=compact_summary_text(payload, max_lines=line_limit, max_line_length=110),
         route=route,
         message_thread_id=_thread_id_from_update(update),
     )
@@ -1310,6 +1347,14 @@ async def callback_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             if chat_id is None:
                 raise ValueError("Chat context is missing.")
             _bind_route_to_current_topic(context.application, update, route)
+            await _send_actor_message(
+                context.application,
+                chat_id,
+                actor="user",
+                text=CONTINUE_PROMPT,
+                route=route,
+                message_thread_id=thread_id,
+            )
             await _send_to_route(
                 context.application,
                 chat_id,
@@ -1323,14 +1368,17 @@ async def callback_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             _bind_route_to_current_topic(context.application, update, route)
             _, payload = _export_route_text(context.application, route)
             if chat_id is not None:
-                await _send_chunked_text(
+                actor_label = "Codex" if route.kind in {"mirror", "agent"} else "Output"
+                await _send_actor_message(
                     context.application,
                     chat_id,
-                    f"Tail for '{route.target}':\n\n{tail_lines(payload, 50)}",
+                    actor="codex",
+                    label=actor_label,
+                    text=tail_lines(payload, 50),
                     route=route,
                     message_thread_id=thread_id,
                 )
-            await query.answer("Tail sent.")
+            await query.answer("Recent sent.")
             return
 
         if op == "l":
