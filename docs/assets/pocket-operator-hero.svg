@@ -5,8 +5,8 @@
   <text x="90" y="122" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="52" font-weight="700">Pocket Operator</text>
   <text x="90" y="168" fill="#C7D2FE" font-family="Arial, sans-serif" font-size="24">Leave your desk, keep your Codex session alive, and reply from your phone.</text>
 
-  <rect x="90" y="200" width="430" height="560" rx="42" fill="#0B1020" stroke="#64748B" stroke-width="3"/>
-  <rect x="122" y="236" width="366" height="488" rx="28" fill="#111827"/>
+  <rect x="90" y="200" width="430" height="580" rx="42" fill="#0B1020" stroke="#64748B" stroke-width="3"/>
+  <rect x="122" y="236" width="366" height="516" rx="28" fill="#111827"/>
   <circle cx="305" cy="218" r="6" fill="#334155"/>
 
   <text x="156" y="292" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="30" font-weight="700">oracle-chat-link</text>
@@ -23,10 +23,10 @@
     <tspan x="156" y="578">  the next reply</tspan>
   </text>
 
-  <rect x="156" y="640" width="300" height="54" rx="16" fill="#2563EB"/>
-  <rect x="156" y="708" width="300" height="54" rx="16" fill="#1E293B"/>
-  <text x="243" y="674" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="21" font-weight="700">Continue</text>
-  <text x="255" y="742" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="21">Recent</text>
+  <rect x="156" y="630" width="300" height="52" rx="16" fill="#2563EB"/>
+  <rect x="156" y="694" width="300" height="52" rx="16" fill="#1E293B"/>
+  <text x="243" y="663" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="21" font-weight="700">Continue</text>
+  <text x="255" y="727" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="21">Recent</text>
 
   <rect x="610" y="238" width="310" height="230" rx="28" fill="#111827" stroke="#334155" stroke-width="2"/>
   <text x="646" y="286" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="30" font-weight="700">ALERTS</text>
