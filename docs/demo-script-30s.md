@@ -6,14 +6,30 @@ Show the core promise in under 30 seconds:
 
 > start with a running local Codex session, leave the desk, continue it from Telegram, and keep the same session alive.
 
+## Fastest Recording Setup
+
+If you want a deterministic recording instead of waiting for a real Codex task to pause at the right moment, run this script inside `Terminal.app`:
+
+```bash
+./scripts/demo_phone_takeover.sh
+```
+
+That gives you a local session that:
+
+- appears active
+- pauses for operator input
+- resumes when Telegram sends the next instruction
+- clearly proves that the same terminal session kept going
+
 ## Demo Outline
 
 ### Scene 1: The local session is already running
 
 On desktop:
 
-- show a Codex session already active in `Terminal.app`
-- briefly show that it is doing real work
+- show either:
+  - a real Codex session already active in `Terminal.app`, or
+  - `./scripts/demo_phone_takeover.sh` running in `Terminal.app`
 
 ### Scene 2: Open Telegram
 

@@ -1,4 +1,4 @@
-# telegram-codex-controller
+# Pocket Operator
 
 [![CI](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/franzzzz/operate-ai-terminal-by-your-phone)](https://github.com/franzzzz/operate-ai-terminal-by-your-phone/releases)
@@ -7,7 +7,9 @@
 
 Take over long-running Codex sessions from your phone.
 
-`telegram-codex-controller` turns Telegram into a practical mobile console for Codex and other terminal-based agents running on your own machine. The core use case is simple:
+`Pocket Operator` is the product name. `telegram-codex-controller` remains the repository and Python package name.
+
+It turns Telegram into a practical mobile console for Codex and other terminal-based agents running on your own machine. The core use case is simple:
 
 > you start a Codex session on your computer, step away from your desk, and still want to monitor it, answer it, continue it, and recover it from your phone.
 
@@ -26,6 +28,7 @@ Start here:
 - [Quick deployment](#quick-deployment)
 - [Security model](SECURITY.md)
 - [30-second demo script](docs/demo-script-30s.md)
+- [Demo session script](scripts/demo_phone_takeover.sh)
 - [Use case: overnight build watcher](docs/use-case-overnight-build-watcher.md)
 - [Use case: mobile research monitor](docs/use-case-mobile-research-monitor.md)
 - [Use case: multi-agent operations console](docs/use-case-multi-agent-operations-console.md)
