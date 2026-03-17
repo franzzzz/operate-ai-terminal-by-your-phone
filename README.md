@@ -145,8 +145,8 @@ This project turns that into a cleaner mobile workflow:
 
 ### Clear Session Identity
 
-- persistent aliases for `ttysNNN` sessions, for example `oracle-chat-link`
-- topic titles that follow current state, such as `🟢 oracle-chat-link` or `🔴 billing-ui`
+- persistent aliases for `ttysNNN` sessions, for example `session-alpha`
+- topic titles that follow current state, such as `🟢 session-alpha` or `🔴 mobile-layout`
 - `INDEX` ordering that highlights error and waiting states first
 - compact summaries optimized for small screens
 
@@ -173,9 +173,9 @@ Recommended topic layout:
 
 - `INDEX`
 - `ALERTS`
-- `BUILD-2 | claim-validator`
-- `RESEARCH-1 | ebm-rules`
-- `FIX-3 | billing-ui`
+- `BUILD-2 | parser-upgrade`
+- `RESEARCH-1 | retrieval-notes`
+- `FIX-3 | mobile-layout`
 
 Daily phone workflow:
 
@@ -259,8 +259,8 @@ Status cards now include inline keyboard actions for the most common flows:
 Examples:
 
 ```bash
-/run research codex exec "Analyze ICD-10-GM validation edge cases"
-/codex ontology Build an ontology plan for medical coding validation
+/run research codex exec "Analyze parser edge cases"
+/codex ontology Build an ontology plan for repository structure
 /agent_new codex triage ./workspace
 /agent triage "Summarize the repo structure"
 /agent_log triage
@@ -270,8 +270,8 @@ Examples:
 /alerts_here
 /open triage
 /topic_create triage
-/send oracle-chat-link Reply with the single word ok.
-/focus oracle-chat-link
+/send session-alpha Reply with the single word ok.
+/focus session-alpha
 /mirror alias ttys003 ocna-vpn
 /mirror snapshot ocna-vpn
 /open ocna-vpn
@@ -794,7 +794,7 @@ If `CONSOLE_FORUM_ENABLED=true` and `CONSOLE_CHAT_ID` points at a forum-enabled 
 - one editable INDEX card in an INDEX topic
 - one ALERTS stream in an ALERTS topic
 - one status card per session in its own topic
-- topic titles that follow session state, e.g. `🔴 oracle-chat-link`
+- topic titles that follow session state, e.g. `🔴 session-alpha`
 
 A practical setup flow is:
 
@@ -802,7 +802,7 @@ A practical setup flow is:
 2. Run `/forum_bootstrap` once to create INDEX, ALERTS, and topics for currently active sessions.
 3. Run `/index_here` inside the INDEX topic if you want to rebind it manually later.
 4. Run `/alerts_here` inside the ALERTS topic if you want to rebind it manually later.
-5. Run `/topic_create oracle-chat-link` or `/topic_create amasys-research` to create additional per-session topics.
+5. Run `/topic_create session-alpha` or `/topic_create research-alpha` to create additional per-session topics.
 6. Use `/open <session>` inside a topic if you want to rebind or refresh that session card there.
 7. Inside a session topic, you can either reply to the status card or just send plain text in that topic to route input back to the bound session.
 

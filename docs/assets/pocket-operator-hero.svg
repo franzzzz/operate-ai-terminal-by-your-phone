@@ -9,7 +9,7 @@
   <rect x="122" y="236" width="366" height="516" rx="28" fill="#111827"/>
   <circle cx="305" cy="218" r="6" fill="#334155"/>
 
-  <text x="156" y="292" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="30" font-weight="700">oracle-chat-link</text>
+  <text x="156" y="292" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="30" font-weight="700">session-alpha</text>
   <circle cx="168" cy="336" r="10" fill="#22C55E"/>
   <text x="190" y="343" fill="#86EFAC" font-family="Arial, sans-serif" font-size="24" font-weight="700">running</text>
 

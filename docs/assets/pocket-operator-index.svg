@@ -3,11 +3,11 @@
   <rect x="60" y="60" width="880" height="500" rx="28" fill="#111827" stroke="#334155" stroke-width="2"/>
   <text x="100" y="118" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="34" font-weight="700">INDEX</text>
   <text x="100" y="156" fill="#93C5FD" font-family="Arial, sans-serif" font-size="18">Overview first. Action second. Noise last.</text>
-  <text x="100" y="226" fill="#F87171" font-family="Arial, sans-serif" font-size="24">🔴 billing-ui | error | checkout submission failed</text>
+  <text x="100" y="226" fill="#F87171" font-family="Arial, sans-serif" font-size="24">🔴 mobile-layout | error | deployment check failed</text>
   <text x="100" y="278" fill="#FACC15" font-family="Arial, sans-serif" font-size="24">🟡 research-agent | waiting | needs a reply</text>
-  <text x="100" y="330" fill="#4ADE80" font-family="Arial, sans-serif" font-size="24">🟢 claim-validator | running | rule evaluation</text>
-  <text x="100" y="382" fill="#4ADE80" font-family="Arial, sans-serif" font-size="24">🟢 oracle-chat-link | running | same local session</text>
-  <text x="100" y="434" fill="#4ADE80" font-family="Arial, sans-serif" font-size="24">🟢 nightly-build | running | make build</text>
+  <text x="100" y="330" fill="#4ADE80" font-family="Arial, sans-serif" font-size="24">🟢 parser-upgrade | running | background processing</text>
+  <text x="100" y="382" fill="#4ADE80" font-family="Arial, sans-serif" font-size="24">🟢 session-alpha | running | same local session</text>
+  <text x="100" y="434" fill="#4ADE80" font-family="Arial, sans-serif" font-size="24">🟢 build-nightly | running | make build</text>
   <rect x="100" y="478" width="220" height="50" rx="14" fill="#1D4ED8"/>
   <rect x="338" y="478" width="260" height="50" rx="14" fill="#1E293B"/>
   <text x="150" y="510" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="18" font-weight="700">Refresh INDEX</text>

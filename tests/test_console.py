@@ -92,25 +92,25 @@ class ConsoleRenderTests(unittest.TestCase):
                 "route_kind": "mirror",
                 "route_target": "ttys002",
                 "kind": "mirror",
-                "label": "oracle-chat-link",
+                "label": "session-alpha",
                 "title": "Terminal",
                 "state": "running",
                 "step": "mirroring",
                 "summary": "line1\nline2",
                 "updated_at": "2026-03-15T21:00:00+00:00",
             }
-            payload = manager.render_record("oracle-chat-link")
-            self.assertIn("oracle-chat-link", payload)
+            payload = manager.render_record("session-alpha")
+            self.assertIn("session-alpha", payload)
             self.assertIn("mirroring", payload)
 
     def test_terminal_alias_persists(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             settings = make_settings(Path(temp_dir))
             manager = TerminalMirrorManager(settings)
-            manager.set_alias("ttys002", "oracle-chat-link")
-            self.assertEqual(manager.alias_for("ttys002"), "oracle-chat-link")
+            manager.set_alias("ttys002", "session-alpha")
+            self.assertEqual(manager.alias_for("ttys002"), "session-alpha")
             reloaded = TerminalMirrorManager(settings)
-            self.assertEqual(reloaded.alias_for("ttys002"), "oracle-chat-link")
+            self.assertEqual(reloaded.alias_for("ttys002"), "session-alpha")
 
     def test_index_sorts_errors_before_running(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -130,14 +130,14 @@ class ConsoleRenderTests(unittest.TestCase):
                     "route_kind": "mirror",
                     "route_target": "ttys002",
                     "kind": "mirror",
-                    "label": "oracle-chat-link",
+                    "label": "session-alpha",
                     "state": "error",
                     "step": "traceback",
                     "updated_at": "2026-03-15T21:00:01+00:00",
                 },
             }
             payload = manager._render_index_text().splitlines()
-            error_index = next(i for i, line in enumerate(payload) if "oracle-chat-link" in line)
+            error_index = next(i for i, line in enumerate(payload) if "session-alpha" in line)
             running_index = next(i for i, line in enumerate(payload) if "build" in line)
             self.assertLess(error_index, running_index)
 
@@ -178,7 +178,7 @@ class ConsoleRenderTests(unittest.TestCase):
                 "route_kind": "mirror",
                 "route_target": "ttys002",
                 "kind": "mirror",
-                "label": "oracle-chat-link",
+                "label": "session-alpha",
                 "status_chat_id": -1001,
                 "status_message_id": 11,
                 "last_event_chat_id": -1001,
@@ -205,7 +205,7 @@ class ConsoleRenderTests(unittest.TestCase):
                 "route_kind": "mirror",
                 "route_target": "ttys002",
                 "kind": "mirror",
-                "label": "oracle-chat-link",
+                "label": "session-alpha",
                 "title": "Terminal",
                 "state": "running",
                 "step": "mirroring",
@@ -214,7 +214,7 @@ class ConsoleRenderTests(unittest.TestCase):
                 "status_message_id": 11,
                 "status_text": "old",
                 "topic_id": 42,
-                "topic_title": "🟢 oracle-chat-link",
+                "topic_title": "🟢 session-alpha",
             }
             manager._last_status_render_monotonic[route.label] = time.monotonic()
 
@@ -223,7 +223,7 @@ class ConsoleRenderTests(unittest.TestCase):
                     SessionStatusSpec(
                         route=route,
                         kind="mirror",
-                        label="oracle-chat-link",
+                        label="session-alpha",
                         title="Terminal",
                         state="waiting",
                         step="waiting for input",
@@ -248,7 +248,7 @@ class ConsoleRenderTests(unittest.TestCase):
                 "route_kind": "mirror",
                 "route_target": "ttys002",
                 "kind": "mirror",
-                "label": "oracle-chat-link",
+                "label": "session-alpha",
                 "title": "Terminal",
                 "state": "running",
                 "step": "mirroring",
@@ -256,7 +256,7 @@ class ConsoleRenderTests(unittest.TestCase):
                 "updated_at": "2026-03-15T21:00:00+00:00",
                 "topic_id": 42,
             }
-            payload = manager.render_record("oracle-chat-link")
+            payload = manager.render_record("session-alpha")
             self.assertIn("send text directly in this topic", payload)
 
     def test_status_reply_markup_shows_continue_and_hides_logs_and_find_error(self) -> None:
@@ -286,7 +286,7 @@ class ConsoleRenderTests(unittest.TestCase):
                 "route_kind": "mirror",
                 "route_target": "ttys002",
                 "kind": "mirror",
-                "label": "oracle-chat-link",
+                "label": "session-alpha",
                 "topic_id": 42,
                 "status_chat_id": -1001,
             }

@@ -2,7 +2,7 @@
   <rect width="1000" height="620" fill="#0F172A"/>
   <rect x="320" y="40" width="360" height="540" rx="34" fill="#020617" stroke="#475569" stroke-width="3"/>
   <rect x="346" y="82" width="308" height="456" rx="24" fill="#111827"/>
-  <text x="374" y="126" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="24" font-weight="700">oracle-chat-link</text>
+  <text x="374" y="126" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="24" font-weight="700">session-alpha</text>
   <text x="374" y="162" fill="#4ADE80" font-family="Arial, sans-serif" font-size="19">🟢 running</text>
   <text x="374" y="206" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="17">Step: waiting for operator input</text>
   <text x="374" y="244" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="16">Summary:</text>

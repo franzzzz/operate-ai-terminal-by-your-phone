@@ -25,9 +25,9 @@ The project’s recommended Telegram workspace solves this with hierarchy:
 
 - `INDEX`
 - `ALERTS`
-- `BUILD-2 | claim-validator`
-- `RESEARCH-1 | ebm-rules`
-- `FIX-3 | billing-ui`
+- `BUILD-2 | parser-upgrade`
+- `RESEARCH-1 | retrieval-notes`
+- `FIX-3 | mobile-layout`
 
 ## Example Flow
 

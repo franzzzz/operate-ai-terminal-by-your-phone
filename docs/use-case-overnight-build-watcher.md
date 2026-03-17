@@ -26,13 +26,13 @@ With `Pocket Operator`, you can:
 1. Start a build session from Telegram:
 
 ```bash
-/run nightly-build make build
+/run build-nightly make build
 ```
 
 2. Open or create its topic:
 
 ```bash
-/open nightly-build
+/open build-nightly
 ```
 
 3. Leave your desk.

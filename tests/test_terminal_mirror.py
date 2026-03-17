@@ -62,7 +62,7 @@ class StubMirrorManager(TerminalMirrorManager):
                 pid=100,
                 title="Terminal",
                 command="codex",
-                alias="oracle-chat-link",
+                alias="session-alpha",
             )
         ]
 
