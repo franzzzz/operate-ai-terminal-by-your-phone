@@ -249,6 +249,8 @@ class TerminalMirrorManager:
 
     def send_input(self, tty: str, text: str) -> None:
         normalized_tty = self.resolve_identifier(tty)
+        current_contents = self._read_terminal_contents(normalized_tty)
+        input_mode = _input_mode(current_contents)
         env = {
             "TGC_TTY": f"/dev/{normalized_tty}" if not normalized_tty.startswith("/dev/") else normalized_tty,
         }
@@ -272,11 +274,22 @@ class TerminalMirrorManager:
             'if foundTab is false then return "missing"',
             "delay 0.1",
             'tell application "System Events"',
+        ]
+        if input_mode == "queue":
+            paste_script.extend(
+                [
+                    "key code 48",
+                    "delay 0.1",
+                ]
+            )
+        paste_script.extend(
+            [
             'keystroke "v" using command down',
             "key code 36",
             "end tell",
             'return "ok"',
-        ]
+            ]
+        )
         saved_clipboard = self._read_clipboard_bytes()
         try:
             self._write_clipboard_bytes(text.encode("utf-8"))
@@ -650,6 +663,15 @@ def _classify_state(text: str, fallback: str) -> str:
     if "traceback" in lowered or "runtimeerror:" in lowered or "zsh: command not found" in lowered:
         return "error"
     return fallback
+
+
+def _input_mode(text: str) -> str:
+    lowered = text.lower()
+    if "tab to queue message" in lowered or "queue message" in lowered:
+        return "queue"
+    if "ready for input" in lowered:
+        return "ready"
+    return "unknown"
 
 
 def _alert_for_state(target: TerminalTarget, state: str, text: str) -> str | None:

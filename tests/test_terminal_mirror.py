@@ -102,6 +102,7 @@ class ClipboardMirrorManager(TerminalMirrorManager):
         self.clipboard_writes: list[bytes] = []
         self.osascript_calls: list[tuple[list[str], dict[str, str] | None]] = []
         self.next_osascript_results: list[str] = []
+        self.current_contents = ""
 
     def _read_clipboard_bytes(self) -> bytes:  # type: ignore[override]
         return b"original clipboard"
@@ -114,6 +115,9 @@ class ClipboardMirrorManager(TerminalMirrorManager):
         if self.next_osascript_results:
             return self.next_osascript_results.pop(0)
         return "ok"
+
+    def _read_terminal_contents(self, tty: str) -> str:  # type: ignore[override]
+        return self.current_contents
 
 
 class TerminalMirrorDeltaTests(unittest.TestCase):
@@ -179,6 +183,28 @@ class TerminalMirrorDeltaTests(unittest.TestCase):
             payload_path = Path(fallback_env["TGC_PAYLOAD_PATH"])
             self.assertFalse(payload_path.exists())
             self.assertNotIn("TGC_PAYLOAD", fallback_env)
+
+    def test_send_input_presses_tab_when_terminal_requests_queue_message(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager = ClipboardMirrorManager(make_settings(Path(temp_dir)))
+            manager.current_contents = "tab to queue message"
+
+            manager.send_input("ttys002", "continue")
+
+            script_lines, _env = manager.osascript_calls[0]
+            self.assertIn("key code 48", script_lines)
+            self.assertIn('keystroke "v" using command down', script_lines)
+            self.assertLess(script_lines.index("key code 48"), script_lines.index('keystroke "v" using command down'))
+
+    def test_send_input_skips_tab_when_terminal_is_not_in_queue_mode(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            manager = ClipboardMirrorManager(make_settings(Path(temp_dir)))
+            manager.current_contents = "ready for input"
+
+            manager.send_input("ttys002", "continue")
+
+            script_lines, _env = manager.osascript_calls[0]
+            self.assertNotIn("key code 48", script_lines)
 
 
 if __name__ == "__main__":
