@@ -18,6 +18,8 @@ This is not a simple stdout forwarder. It packages multi-session status, alerts,
 - ship full logs as `.log` documents instead of pasting large text blocks
 - restrict control to approved Telegram users only
 
+**Dogfooding proof:** the project itself was developed entirely over Telegram from a phone.
+
 ## Product Overview
 
 `telegram-codex-controller` is a remote-control layer for local agent workflows. It is designed for people who already run Codex, Claude, research scripts, or long-lived build tasks on their own machine and want a clean mobile control plane instead of raw logs.
