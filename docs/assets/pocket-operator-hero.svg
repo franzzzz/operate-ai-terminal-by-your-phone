@@ -1,45 +1,49 @@
 <svg width="1400" height="820" viewBox="0 0 1400 820" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="1400" height="820" fill="#0B1220"/>
   <rect x="40" y="40" width="1320" height="740" rx="32" fill="url(#bg)"/>
-  <text x="90" y="125" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="52" font-weight="700">Pocket Operator</text>
-  <text x="90" y="170" fill="#C7D2FE" font-family="Arial, sans-serif" font-size="24">Take over a running Codex session from your phone.</text>
 
-  <rect x="90" y="230" width="520" height="470" rx="26" fill="#111827" stroke="#334155" stroke-width="2"/>
-  <text x="120" y="275" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="24" font-weight="700">Telegram / INDEX</text>
-  <rect x="120" y="300" width="460" height="56" rx="16" fill="#1D4ED8"/>
-  <text x="145" y="336" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="21" font-weight="700">INDEX</text>
-  <text x="120" y="395" fill="#F87171" font-family="Arial, sans-serif" font-size="22">🔴 billing-ui | error | payment step failed</text>
-  <text x="120" y="445" fill="#FACC15" font-family="Arial, sans-serif" font-size="22">🟡 research-ops | waiting | reply needed</text>
-  <text x="120" y="495" fill="#4ADE80" font-family="Arial, sans-serif" font-size="22">🟢 claim-validator | running | processing</text>
-  <text x="120" y="545" fill="#4ADE80" font-family="Arial, sans-serif" font-size="22">🟢 oracle-chat-link | running | same session alive</text>
-  <rect x="120" y="600" width="210" height="46" rx="14" fill="#1E293B"/>
-  <rect x="350" y="600" width="230" height="46" rx="14" fill="#1E293B"/>
-  <text x="155" y="630" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="18">Refresh INDEX</text>
-  <text x="390" y="630" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="18">Recent Errors</text>
+  <text x="90" y="122" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="52" font-weight="700">Pocket Operator</text>
+  <text x="90" y="168" fill="#C7D2FE" font-family="Arial, sans-serif" font-size="24">Leave your desk, keep your Codex session alive, and reply from your phone.</text>
 
-  <rect x="720" y="170" width="280" height="560" rx="34" fill="#020617" stroke="#475569" stroke-width="3"/>
-  <rect x="742" y="205" width="236" height="500" rx="24" fill="#111827"/>
-  <text x="770" y="245" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="22" font-weight="700">oracle-chat-link</text>
-  <text x="770" y="280" fill="#4ADE80" font-family="Arial, sans-serif" font-size="20">🟢 running</text>
-  <text x="770" y="322" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="17">Step: waiting for follow-up</text>
-  <text x="770" y="362" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="16">Summary:</text>
-  <text x="770" y="394" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="16">- local Codex session is still alive</text>
-  <text x="770" y="422" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="16">- operator stepped away from desk</text>
-  <text x="770" y="450" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="16">- Telegram is ready to route the next reply</text>
-  <rect x="770" y="520" width="190" height="42" rx="13" fill="#2563EB"/>
-  <rect x="770" y="575" width="190" height="42" rx="13" fill="#1E293B"/>
-  <text x="815" y="548" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="18" font-weight="700">Continue</text>
-  <text x="820" y="603" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="18">Recent</text>
+  <rect x="90" y="200" width="430" height="560" rx="42" fill="#0B1020" stroke="#64748B" stroke-width="3"/>
+  <rect x="122" y="236" width="366" height="488" rx="28" fill="#111827"/>
+  <circle cx="305" cy="218" r="6" fill="#334155"/>
 
-  <rect x="1040" y="260" width="220" height="210" rx="22" fill="#111827" stroke="#334155" stroke-width="2"/>
-  <text x="1070" y="302" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="22" font-weight="700">ALERTS</text>
-  <text x="1070" y="350" fill="#FACC15" font-family="Arial, sans-serif" font-size="18">🟡 ready for input</text>
-  <text x="1070" y="388" fill="#F87171" font-family="Arial, sans-serif" font-size="18">🔴 error surfaced</text>
-  <text x="1070" y="426" fill="#4ADE80" font-family="Arial, sans-serif" font-size="18">✅ task completed</text>
+  <text x="156" y="292" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="30" font-weight="700">oracle-chat-link</text>
+  <circle cx="168" cy="336" r="10" fill="#22C55E"/>
+  <text x="190" y="343" fill="#86EFAC" font-family="Arial, sans-serif" font-size="24" font-weight="700">running</text>
 
-  <text x="1040" y="560" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="26" font-weight="700">Phone-first control plane</text>
-  <text x="1040" y="602" fill="#C7D2FE" font-family="Arial, sans-serif" font-size="18">Reply to a blocked Codex session</text>
-  <text x="1040" y="632" fill="#C7D2FE" font-family="Arial, sans-serif" font-size="18">without SSH or remote desktop.</text>
+  <text x="156" y="395" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="20" font-weight="700">Step: waiting for follow-up</text>
+  <text x="156" y="447" fill="#CBD5E1" font-family="Arial, sans-serif" font-size="20" font-weight="700">Summary:</text>
+
+  <text fill="#E2E8F0" font-family="Arial, sans-serif" font-size="18">
+    <tspan x="156" y="488">- local Codex session is still alive</tspan>
+    <tspan x="156" y="518">- operator stepped away from desk</tspan>
+    <tspan x="156" y="548">- Telegram is ready to route</tspan>
+    <tspan x="156" y="578">  the next reply</tspan>
+  </text>
+
+  <rect x="156" y="640" width="300" height="54" rx="16" fill="#2563EB"/>
+  <rect x="156" y="708" width="300" height="54" rx="16" fill="#1E293B"/>
+  <text x="243" y="674" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="21" font-weight="700">Continue</text>
+  <text x="255" y="742" fill="#E2E8F0" font-family="Arial, sans-serif" font-size="21">Recent</text>
+
+  <rect x="610" y="238" width="310" height="230" rx="28" fill="#111827" stroke="#334155" stroke-width="2"/>
+  <text x="646" y="286" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="30" font-weight="700">ALERTS</text>
+  <circle cx="658" cy="334" r="10" fill="#FACC15"/>
+  <text x="680" y="341" fill="#FDE68A" font-family="Arial, sans-serif" font-size="22" font-weight="700">ready for input</text>
+  <circle cx="658" cy="388" r="10" fill="#EF4444"/>
+  <text x="680" y="395" fill="#FCA5A5" font-family="Arial, sans-serif" font-size="22" font-weight="700">error surfaced</text>
+  <circle cx="658" cy="442" r="10" fill="#22C55E"/>
+  <text x="680" y="449" fill="#86EFAC" font-family="Arial, sans-serif" font-size="22" font-weight="700">task completed</text>
+
+  <text x="610" y="565" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="44" font-weight="700">Phone-first</text>
+  <text x="610" y="614" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="44" font-weight="700">control plane</text>
+
+  <text fill="#CBD5E1" font-family="Arial, sans-serif" font-size="22">
+    <tspan x="610" y="676">Reply to a blocked Codex session</tspan>
+    <tspan x="610" y="708">without SSH or remote desktop.</tspan>
+  </text>
 
   <defs>
     <linearGradient id="bg" x1="40" y1="40" x2="1360" y2="780" gradientUnits="userSpaceOnUse">
